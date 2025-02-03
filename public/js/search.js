@@ -1,4 +1,4 @@
-const SERVER_IP = "http://51.124.187.58:3000";  // ✅ Replace with your Azure server IP
+const SERVER_IP = "http://51.124.187.58:3000";  // ✅ Use your Azure server
 
 document.getElementById("foodSearch").addEventListener("input", async function () {
     let query = this.value.trim();
@@ -33,7 +33,7 @@ document.getElementById("foodSearch").addEventListener("input", async function (
     }
 });
 
-// ✅ Function to Display Food Results
+// ✅ Define `displayFoodResults`
 function displayFoodResults(data) {
     let resultsContainer = document.getElementById("searchResults");
     resultsContainer.innerHTML = "";

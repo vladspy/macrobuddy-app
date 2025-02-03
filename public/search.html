@@ -1,68 +1,23 @@
-const SERVER_IP = "http://51.124.187.58:3000";  // ✅ Use your Azure server
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Search</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        #searchResults { border: 1px solid #ddd; max-width: 300px; display: none; }
+        .result-item { padding: 10px; cursor: pointer; border-bottom: 1px solid #ddd; }
+        .result-item:hover { background-color: #f0f0f0; }
+    </style>
+</head>
+<body>
 
-document.getElementById("foodSearch").addEventListener("input", async function () {
-    let query = this.value.trim();
-    let resultsContainer = document.getElementById("searchResults");
+    <h2>Food Search</h2>
+    <input type="text" id="foodSearch" placeholder="Search for food..." autocomplete="off">
+    <div id="searchResults"></div>
 
-    if (query.length < 2) {
-        resultsContainer.style.display = "none";
-        return;
-    }
+    <script src="js/search.js"></script>
 
-    if (!navigator.onLine) {
-        console.warn("📴 Offline: Cannot search USDA database.");
-        return;
-    }
-
-    try {
-        let response = await fetch(`${SERVER_IP}/api/food/search?query=${query}`);
-        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-
-        let data = await response.json();
-        if (!data || data.length === 0) {
-            resultsContainer.innerHTML = "<p>No results found.</p>";
-            resultsContainer.style.display = "block";
-            return;
-        }
-
-        displayFoodResults(data);
-    } catch (error) {
-        console.error("❌ Error fetching food data:", error);
-        resultsContainer.innerHTML = "<p>Error fetching data.</p>";
-        resultsContainer.style.display = "block";
-    }
-});
-
-// ✅ Define `displayFoodResults`
-function displayFoodResults(data) {
-    let resultsContainer = document.getElementById("searchResults");
-    resultsContainer.innerHTML = "";
-
-    data.forEach(food => {
-        let resultItem = document.createElement("div");
-        resultItem.classList.add("result-item");
-        resultItem.innerHTML = `
-            <strong>${food.name}</strong><br>
-            Calories: ${food.calories} kcal, Protein: ${food.protein}g, Carbs: ${food.carbs}g, Fats: ${food.fats}g
-        `;
-        resultItem.onclick = () => {
-            document.getElementById("foodSearch").value = food.name;
-            resultsContainer.style.display = "none";
-        };
-        resultsContainer.appendChild(resultItem);
-    });
-
-    resultsContainer.style.display = "block";
-}
-
-// ✅ Hide results dropdown when clicking outside
-document.addEventListener("click", function (event) {
-    if (!event.target.closest("#searchResults") && !event.target.closest("#foodSearch")) {
-        document.getElementById("searchResults").style.display = "none";
-    }
-});
-
-// ✅ Show warning if offline
-window.addEventListener("offline", () => {
-    console.warn("📴 You are offline. Food search will not work.");
-});
+</body>
+</html>
