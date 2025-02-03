@@ -11,8 +11,11 @@ const PIRoutes = require('./routes/PIRoutes');
 const foodRoutes = require('./routes/foodRoutes');
 
 const app = express();
+
+app.use(express.static(path.join(__dirname, 'public')));
+
 const PORT = process.env.PORT|| 3000; // Use environment variable for port
-app.use(express.static(path.join(__dirname, 'frontend')));
+
 
 // Middleware
 app.use(cors({
