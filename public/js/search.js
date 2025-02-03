@@ -1,7 +1,7 @@
 const SERVER_IP = "http://51.124.187.58:3000";  // ✅ Use your Azure server
 
 document.getElementById("foodSearch").addEventListener("input", async function () {
-    let query = this.value.trim();
+    let query = this.value.trim().toLowerCase();
     let resultsContainer = document.getElementById("searchResults");
 
     if (query.length < 2) {
@@ -15,24 +15,20 @@ document.getElementById("foodSearch").addEventListener("input", async function (
     }
 
     try {
-        let response = await fetch(`${SERVER_IP}/api/food/search?query=${query}`);
+        // ✅ Ensure the API URL is correct
+        let response = await fetch(`${SERVER_IP}/api/food/search?query=${encodeURIComponent(query)}`);
         if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
 
         let data = await response.json();
+        let foodArray = data.foods || [];
 
-        // ✅ Convert single object to an array for consistency
-        if (!Array.isArray(data)) {
-            console.warn("ℹ️ API returned a single object, converting to array.");
-            data = [data];  // Convert object to an array
-        }
-
-        if (data.length === 0) {
+        if (foodArray.length === 0) {
             resultsContainer.innerHTML = "<p>No results found.</p>";
             resultsContainer.style.display = "block";
             return;
         }
 
-        displayFoodResults(data);
+        displayFoodResults(foodArray);
     } catch (error) {
         console.error("❌ Error fetching food data:", error);
         resultsContainer.innerHTML = "<p>Error fetching data.</p>";
@@ -40,20 +36,23 @@ document.getElementById("foodSearch").addEventListener("input", async function (
     }
 });
 
-// ✅ Define `displayFoodResults`
-function displayFoodResults(data) {
+// ✅ Display all search results
+function displayFoodResults(foods) {
     let resultsContainer = document.getElementById("searchResults");
     resultsContainer.innerHTML = "";
 
-    data.forEach(food => {
+    foods.slice(0, 10).forEach(food => {
         let resultItem = document.createElement("div");
         resultItem.classList.add("result-item");
         resultItem.innerHTML = `
-            <strong>${food.product_name}</strong><br>
-            Calories: ${food.energy_kcal} kcal, Protein: ${food.protein}g, Carbs: ${food.carbs}g, Fats: ${food.fats}g
+            <strong>${food.description}</strong><br>
+            Calories: ${food.foodNutrients?.find(nutrient => nutrient.nutrientName === "Energy")?.value || "N/A"} kcal,
+            Protein: ${food.foodNutrients?.find(nutrient => nutrient.nutrientName === "Protein")?.value || "N/A"}g,
+            Carbs: ${food.foodNutrients?.find(nutrient => nutrient.nutrientName === "Carbohydrate, by difference")?.value || "N/A"}g,
+            Fats: ${food.foodNutrients?.find(nutrient => nutrient.nutrientName === "Total lipid (fat)")?.value || "N/A"}g
         `;
         resultItem.onclick = () => {
-            document.getElementById("foodSearch").value = food.product_name;
+            document.getElementById("foodSearch").value = food.description;
             resultsContainer.style.display = "none";
         };
         resultsContainer.appendChild(resultItem);
@@ -62,7 +61,7 @@ function displayFoodResults(data) {
     resultsContainer.style.display = "block";
 }
 
-// ✅ Hide results dropdown when clicking outside
+// ✅ Hide dropdown when clicking outside
 document.addEventListener("click", function (event) {
     if (!event.target.closest("#searchResults") && !event.target.closest("#foodSearch")) {
         document.getElementById("searchResults").style.display = "none";

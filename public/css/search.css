@@ -1,0 +1,44 @@
+body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    background-color: #f8f9fa;
+}
+
+h2 {
+    color: #333;
+}
+
+#foodSearch {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+}
+
+#searchResults {
+    border: 1px solid #ddd;
+    max-width: 100%;
+    display: none;
+    position: absolute;
+    background: white;
+    z-index: 1000;
+    width: calc(100% - 40px);
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    overflow-y: auto;  /* ✅ Enables vertical scrolling */
+    max-height: 250px;  /* ✅ Limits dropdown height */
+    margin-top: 5px;
+}
+
+.result-item {
+    padding: 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #ddd;
+    transition: background 0.2s ease-in-out;
+}
+
+.result-item:hover {
+    background-color: #f0f0f0;
+}

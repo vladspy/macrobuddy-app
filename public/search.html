@@ -4,12 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Food Search</title>
-    <style>
-        body { font-family: Arial, sans-serif; padding: 20px; }
-        #searchResults { border: 1px solid #ddd; max-width: 300px; display: none; }
-        .result-item { padding: 10px; cursor: pointer; border-bottom: 1px solid #ddd; }
-        .result-item:hover { background-color: #f0f0f0; }
-    </style>
+    <link rel="stylesheet" href="css/search.css"> <!-- ✅ Ensures styling is applied -->
 </head>
 <body>
 
@@ -17,7 +12,7 @@
     <input type="text" id="foodSearch" placeholder="Search for food..." autocomplete="off">
     <div id="searchResults"></div>
 
-    <script src="js/search.js"></script>
+    <script src="js/search.js" defer></script>
 
 </body>
 </html>
