@@ -20,11 +20,10 @@ document.getElementById("foodSearch").addEventListener("input", async function (
 
         let data = await response.json();
 
+        // ✅ Convert single object to an array for consistency
         if (!Array.isArray(data)) {
-            console.error("❌ Unexpected API response format:", data);
-            resultsContainer.innerHTML = "<p>Error fetching data. Unexpected format.</p>";
-            resultsContainer.style.display = "block";
-            return;
+            console.warn("ℹ️ API returned a single object, converting to array.");
+            data = [data];  // Convert object to an array
         }
 
         if (data.length === 0) {
@@ -50,11 +49,11 @@ function displayFoodResults(data) {
         let resultItem = document.createElement("div");
         resultItem.classList.add("result-item");
         resultItem.innerHTML = `
-            <strong>${food.name}</strong><br>
-            Calories: ${food.calories} kcal, Protein: ${food.protein}g, Carbs: ${food.carbs}g, Fats: ${food.fats}g
+            <strong>${food.product_name}</strong><br>
+            Calories: ${food.energy_kcal} kcal, Protein: ${food.protein}g, Carbs: ${food.carbs}g, Fats: ${food.fats}g
         `;
         resultItem.onclick = () => {
-            document.getElementById("foodSearch").value = food.name;
+            document.getElementById("foodSearch").value = food.product_name;
             resultsContainer.style.display = "none";
         };
         resultsContainer.appendChild(resultItem);
