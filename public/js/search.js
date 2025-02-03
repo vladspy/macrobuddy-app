@@ -7,14 +7,13 @@ document.getElementById("foodSearch").addEventListener("input", async function (
         return;
     }
 
-    // 🛑 Prevent search if offline
     if (!navigator.onLine) {
         console.warn("📴 Offline: Cannot search USDA database.");
         return;
     }
 
     try {
-        let response = await fetch(`http://localhost:3000/api/food/search?query=${query}`);
+        let response = await fetch(`http://51.124.187.58:3000/api/food/search?query=${query}`);
         if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
 
         let data = await response.json();
@@ -23,7 +22,6 @@ document.getElementById("foodSearch").addEventListener("input", async function (
             return;
         }
 
-        // ✅ Populate dropdown with food results
         displayFoodResults(data);
     } catch (error) {
         console.error("❌ Error fetching food data:", error);
@@ -31,7 +29,6 @@ document.getElementById("foodSearch").addEventListener("input", async function (
     }
 });
 
-// ✅ Function to Display Food Results
 function displayFoodResults(data) {
     let resultsContainer = document.getElementById("searchResults");
     resultsContainer.innerHTML = "";
@@ -52,8 +49,3 @@ function displayFoodResults(data) {
 
     resultsContainer.style.display = "block";
 }
-
-// ✅ Show warning if offline
-window.addEventListener("offline", () => {
-    console.warn("📴 You are offline. Food search will not work.");
-});
