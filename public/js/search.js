@@ -19,7 +19,15 @@ document.getElementById("foodSearch").addEventListener("input", async function (
         if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
 
         let data = await response.json();
-        if (!data || data.length === 0) {
+
+        if (!Array.isArray(data)) {
+            console.error("❌ Unexpected API response format:", data);
+            resultsContainer.innerHTML = "<p>Error fetching data. Unexpected format.</p>";
+            resultsContainer.style.display = "block";
+            return;
+        }
+
+        if (data.length === 0) {
             resultsContainer.innerHTML = "<p>No results found.</p>";
             resultsContainer.style.display = "block";
             return;
