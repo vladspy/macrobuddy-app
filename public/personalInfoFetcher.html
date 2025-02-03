@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Info Viewer</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        #personalInfo {
+            margin-top: 20px;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        #personalInfo th, #personalInfo td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        #personalInfo th {
+            background-color: #f2f2f2;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Personal Information</h1>
+    <button id="fetchData">Fetch Data</button>
+
+    <table id="personalInfo">
+        <thead>
+            <tr>
+                <th>User ID</th>
+                <th>Sex</th>
+                <th>Height</th>
+                <th>Age</th>
+                <th>Weight</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Data will be populated here -->
+        </tbody>
+    </table>
+
+    <script>
+        document.getElementById('fetchData').addEventListener('click', async () => {
+            try {
+                console.log("Fetching data...");
+                
+                // Corrected fetch request to match working API URL
+                const response = await fetch('http://51.124.187.58:3000/api/personal-info/getPI?userId=1');
+                
+                if (!response.ok) {
+                    throw new Error(`Error: ${response.status} - ${response.statusText}`);
+                }
+
+                const data = await response.json();
+
+                console.log("Received data:", data);
+
+                // Ensure we are working with an array
+                const dataArray = Array.isArray(data) ? data : [data];
+
+                // Populate the table
+                const tableBody = document.querySelector('#personalInfo tbody');
+                tableBody.innerHTML = ''; // Clear existing rows
+
+                dataArray.forEach(item => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${item.user_id}</td>
+                        <td>${item.sex === 0 ? 'Female' : 'Male'}</td>
+                        <td>${item.height}</td>
+                        <td>${item.age}</td>
+                        <td>${item.weight}</td>
+                        <td>${item.first_name}</td>
+                        <td>${item.last_name}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                alert(`Failed to fetch personal information.\n${error.message}`);
+            }
+        });
+    </script>
+
+</body>
+</html>
