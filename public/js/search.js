@@ -1,3 +1,5 @@
+const SERVER_IP = "http://51.124.187.58:3000";  // ✅ Replace with your Azure server IP
+
 document.getElementById("foodSearch").addEventListener("input", async function () {
     let query = this.value.trim();
     let resultsContainer = document.getElementById("searchResults");
@@ -13,22 +15,25 @@ document.getElementById("foodSearch").addEventListener("input", async function (
     }
 
     try {
-        let response = await fetch(`http://51.124.187.58:3000/api/food/search?query=${query}`);
+        let response = await fetch(`${SERVER_IP}/api/food/search?query=${query}`);
         if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
 
         let data = await response.json();
         if (!data || data.length === 0) {
-            resultsContainer.style.display = "none";
+            resultsContainer.innerHTML = "<p>No results found.</p>";
+            resultsContainer.style.display = "block";
             return;
         }
 
         displayFoodResults(data);
     } catch (error) {
         console.error("❌ Error fetching food data:", error);
-        resultsContainer.style.display = "none";
+        resultsContainer.innerHTML = "<p>Error fetching data.</p>";
+        resultsContainer.style.display = "block";
     }
 });
 
+// ✅ Function to Display Food Results
 function displayFoodResults(data) {
     let resultsContainer = document.getElementById("searchResults");
     resultsContainer.innerHTML = "";
@@ -49,3 +54,15 @@ function displayFoodResults(data) {
 
     resultsContainer.style.display = "block";
 }
+
+// ✅ Hide results dropdown when clicking outside
+document.addEventListener("click", function (event) {
+    if (!event.target.closest("#searchResults") && !event.target.closest("#foodSearch")) {
+        document.getElementById("searchResults").style.display = "none";
+    }
+});
+
+// ✅ Show warning if offline
+window.addEventListener("offline", () => {
+    console.warn("📴 You are offline. Food search will not work.");
+});
