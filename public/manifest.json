@@ -1,6 +1,6 @@
 {
-    "name": "Macro Counter",
-    "short_name": "Macros",
+    "name": "MacroBuddy",
+    "short_name": "MacroBuddy",
     "description": "A simple macro counter for tracking daily intake of protein, carbs, and fats.",
     "start_url": "/",
     "display": "standalone",

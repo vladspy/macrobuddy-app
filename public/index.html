@@ -1,77 +1,45 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>MacroBuddy PWA</title>
 
     <!-- CSS -->
     <link rel="stylesheet" href="css/design.css">
 
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+
     <!-- JS -->
     <script src="js/index.js" defer></script>
-
-    <title> Hello World </title>
+    <script src="js/foodSearch.js" defer></script>
 </head>
 
 <body>
     <div id="bmr-calculator" class="wrapper">
         <div class="calculator">
-            <div class="Profile">
-                <button type="button" class="exit-btn" onclick="window.location.href='profile.html'"> Profile </button>
-            </div>
-
-            <!-- Text fields for input -->
-            <!--<label for="calc-age">Age:</label>
-            <input id="calc-age" type="number" value="25" min="13" max="100" step="1">
-
-            <label for="calc-height">Height (cm):</label>
-            <input id="calc-height" type="number" value="180" min="80" max="250" step="1">
-
-            <label for="calc-weight">Weight (kg):</label>
-            <input id="calc-weight" type="number" value="80" min="40" max="200" step="0.1">
-
-            <label for="calc-exrcise">Exercise (days per week):</label>
-            <input id="calc-exercise" type="number" value="0" min="0" max="7" step="1">
-
-            <label for="calc-intensity">Intensity (minutes per session):</label>
-            <input id="calc-intensity" type="number" value="0" min="0" max="1440" step="15">--> 
-            
+            <button type="button" class="exit-btn" onclick="window.location.href='profile.html'"> Profile </button>
         </div>
 
         <div class="results">
-            <div id="calc-target-gain">
-                To Gain Weight:<br>
-                <span>2700 calories</span>
-            </div>
-            <div id="calc-target-maintain">
-                To Maintain:<br>
-                <span>2400 calories</span>
-            </div>
-            <div id="calc-target-lose">
-                To Lose Weight:<br>
-                <span>1900 calories</span>
-            </div>
+            <div id="calc-target-gain">To Gain Weight:<br><span>2700 calories</span></div>
+            <div id="calc-target-maintain">To Maintain:<br><span>2400 calories</span></div>
+            <div id="calc-target-lose">To Lose Weight:<br><span>1900 calories</span></div>
         </div>
     </div>
 
-    <div id="chatgpt-integration" class="wrapper">
-        <h2>Ask ChatGPT</h2>
-        <form id="chatgpt-form">
-            <textarea id="chatgpt-input" placeholder="Type your food here" rows="4"></textarea>
-            <button type="submit" id="chatgpt-submit">Ask</button>
+    <div id="usda-food-search" class="wrapper">
+        <h2>Search the USDA Food Database</h2>
+        <form id="usda-form">
+            <input type="text" id="food-query" placeholder="Enter food item">
+            <button type="submit" id="search-food">Search</button>
         </form>
-        <div id="chatgpt-response">
-            <p><strong>Response:</strong></p>
-            <p id="response-text">Waiting for your question...</p>
-        </div>
+        <div id="food-results"></div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.6.3.js"
-        integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM=" crossorigin="anonymous"></script>
-
-    <script src="script.js"></script>
 </body>
 
 </html>

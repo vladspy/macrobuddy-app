@@ -17,52 +17,7 @@
     <input type="text" id="foodSearch" placeholder="Search for food..." autocomplete="off">
     <div id="searchResults"></div>
 
-    <script>
-        document.getElementById("foodSearch").addEventListener("input", async function () {
-            let query = this.value.trim();
-            let resultsContainer = document.getElementById("searchResults");
-
-            if (query.length < 2) {
-                resultsContainer.style.display = "none";
-                return;
-            }
-
-            try {
-                let response = await fetch(`http://localhost:3000/api/food/search?query=${query}`);
-                let data = await response.json();
-
-                if (data.error) {
-                    resultsContainer.style.display = "none";
-                    return;
-                }
-
-                // ✅ Populate dropdown with food results
-                resultsContainer.innerHTML = "";
-                let resultItem = document.createElement("div");
-                resultItem.classList.add("result-item");
-                resultItem.innerHTML = `
-                    <strong>${data.product_name}</strong><br>
-                    Calories: ${data.energy_kcal} kcal, Protein: ${data.protein}g, Carbs: ${data.carbs}g, Fats: ${data.fats}g
-                `;
-                resultItem.onclick = () => {
-                    document.getElementById("foodSearch").value = data.product_name;
-                    resultsContainer.style.display = "none";
-                };
-                resultsContainer.appendChild(resultItem);
-                resultsContainer.style.display = "block";
-            } catch (error) {
-                console.error("Error fetching food data:", error);
-                resultsContainer.style.display = "none";
-            }
-        });
-
-        // Hide dropdown when clicking outside
-        document.addEventListener("click", function (event) {
-            if (!event.target.closest("#searchResults") && !event.target.closest("#foodSearch")) {
-                document.getElementById("searchResults").style.display = "none";
-            }
-        });
-    </script>
+    <script src="js/search.js"></script>
 
 </body>
 </html>

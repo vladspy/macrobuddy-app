@@ -12,7 +12,15 @@ document.addEventListener("DOMContentLoaded", function () {
     const resultLose = document.querySelector("#calc-target-lose span");
 
 
-
+    if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker
+            .register("/service-worker.js")
+            .then((reg) => console.log("✅ Service Worker Registered:", reg))
+            .catch((err) => console.log("❌ Service Worker Failed:", err));
+        });
+      }
+      
     // Function to calculate BMR
     function calculateBMR() {
         const age = parseInt(ageInput.value);
