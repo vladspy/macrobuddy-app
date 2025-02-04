@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // ✅ Check if user is already logged in using session
     fetch('http://51.124.187.58:3000/api/users/isLoggedIn', {
         method: 'GET',
-        credentials: 'include' // ✅ Include cookies in the request
+        credentials: 'include'
     })
     .then(response => response.json())
     .then(data => {
@@ -24,13 +24,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // ✅ Handle Logout
     if (logoutButton) {
-        logoutButton.addEventListener("click", async () => {
-            await fetch('http://51.124.187.58:3000/api/users/logout', {
-                method: 'POST',
-                credentials: 'include'
-            });
+        logoutButton.addEventListener("click", logout);
+    }
+
+    function logout() {
+        fetch('http://51.124.187.58:3000/api/users/logout', {
+            method: 'POST',
+            credentials: 'include'
+        }).then(() => {
             localStorage.clear();
-            window.location.href = "login.html";
+            alert("✅ Logged out successfully!");
+            window.location.href = "login.html"; // ✅ Redirect to login page
+        }).catch(error => {
+            console.error("❌ Error logging out:", error);
+            alert("❌ Logout failed.");
         });
     }
 
@@ -56,12 +63,12 @@ document.addEventListener("DOMContentLoaded", () => {
             const data = await response.json();
             
             if (response.ok) {
-                localStorage.setItem("isLoggedIn", "true");  // ✅ Store login status
-                localStorage.setItem("authToken", data.token);  // ✅ Store token for API requests
-                localStorage.setItem("email", email);  // ✅ Store email
+                localStorage.setItem("isLoggedIn", "true");
+                localStorage.setItem("authToken", data.token);
+                localStorage.setItem("email", email);
 
                 alert("✅ Login successful!");
-                window.location.href = "index.html"; // ✅ Redirect to main page
+                window.location.href = "index.html";
             } else {
                 alert("❌ Login failed: " + data.error);
             }
@@ -96,8 +103,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (response.ok) {
                 alert("✅ Account created successfully! You can now log in.");
-                signupForm.style.display = 'none';
                 signinForm.style.display = 'block';
+                signupForm.style.display = 'none';
             } else {
                 alert("❌ Signup failed: " + data.error);
             }
@@ -106,36 +113,4 @@ document.addEventListener("DOMContentLoaded", () => {
             alert("❌ An error occurred.");
         }
     });
-
-    // ✅ Check if user is already logged in using session
-    fetch('http://51.124.187.58:3000/api/users/isLoggedIn', {
-        method: 'GET',
-        credentials: 'include' // ✅ Include cookies in the request
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (!data.loggedIn) {
-            window.location.href = "login.html"; // ✅ Redirect to login if not logged in
-        }
-    }).catch(err => console.error("❌ Error checking login status:", err));
-
-    // ✅ Handle Logout
-    if (logoutButton) {
-        logoutButton.addEventListener("click", async () => {
-            try {
-                await fetch('http://51.124.187.58:3000/api/users/logout', {
-                    method: 'POST',
-                    credentials: 'include'
-                });
-
-                localStorage.clear(); // ✅ Clear user data
-                alert("✅ Logged out successfully!");
-                window.location.href = "login.html"; // ✅ Redirect to login page
-            } catch (error) {
-                console.error("❌ Error logging out:", error);
-                alert("❌ Logout failed.");
-            }
-        });
-    }
 });
-
