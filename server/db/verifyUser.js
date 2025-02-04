@@ -13,7 +13,7 @@ const verifyPassword = async (storedHash, inputPassword) => {
     }
 };
 
-const verifyUser = async (email, password) => {
+const verifyUser = async (email, password, res) => {
     try {
         const connection = await connectDB();
         const [rows] = await connection.execute('SELECT * FROM user WHERE email = ?', [email]);
@@ -26,9 +26,21 @@ const verifyUser = async (email, password) => {
         const isValid = await verifyPassword(storedHash, password);
 
         if (isValid) {
-            const token = jwt.sign({ id: rows[0].id, email: rows[0].email }, SECRET_KEY, { expiresIn: '1h' });
+            const token = jwt.sign(
+                { id: rows[0].id, email: rows[0].email },
+                SECRET_KEY,
+                { expiresIn: '1h' }
+            );
 
-            return { success: true, message: 'User verified successfully!', token };
+            // Set token in HTTP-only cookie
+            res.cookie('authToken', token, {
+                httpOnly: true,
+                secure: true, // Set to true if using HTTPS
+                sameSite: 'Strict',
+                maxAge: 3600000 // 1 hour
+            });
+
+            return { success: true, message: 'User verified successfully!' };
         } else {
             return { success: false, error: 'Invalid email or password.' };
         }

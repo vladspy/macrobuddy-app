@@ -11,9 +11,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // ✅ Check if user is already logged in using session
-    fetch('http://51.124.187.58:3000/api/users/isLoggedIn', {
+    fetch('/api/users/isLoggedIn', {
         method: 'GET',
-        credentials: 'include'
+        credentials: 'include' // ✅ Include cookies in the request
     })
     .then(response => response.json())
     .then(data => {
@@ -22,31 +22,28 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }).catch(err => console.error("❌ Error checking login status:", err));
 
+    // ✅ Handle Logout
+    if (logoutButton) {
+        logoutButton.addEventListener("click", async () => {
+            try {
+                const response = await fetch('/api/users/logout', {
+                    method: 'POST',
+                    credentials: 'include'
+                });
 
-    function logout() {
-        fetch('http://51.124.187.58:3000/api/users/logout', {
-            method: 'POST',
-            credentials: 'include' // ✅ Makes sure cookies are included in the request
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                localStorage.clear(); // ✅ Clear user data
-                document.cookie = "sessionID=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-                alert("✅ Logged out successfully!");
-                window.location.href = "login.html"; // ✅ Redirect to login page
-            } else {
-                alert("❌ Logout failed: " + data.error);
+                if (response.ok) {
+                    alert("✅ Logged out successfully!");
+                    window.location.href = "login.html"; // Redirect to login page
+                } else {
+                    alert("❌ Logout failed. Please try again.");
+                }
+            } catch (error) {
+                console.error("❌ Error logging out:", error);
+                alert("❌ An error occurred during logout.");
             }
-        })
-        .catch(error => {
-            console.error("❌ Error logging out:", error);
-            alert("❌ Logout failed.");
         });
     }
-    
-    // Attach logout event listener
-    document.getElementById("logout-btn").addEventListener("click", logout);
+
     // ✅ Handle Sign In
     signinForm.addEventListener('submit', async (event) => {
         event.preventDefault(); // Prevent form submission reload
@@ -60,21 +57,18 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         try {
-            const response = await fetch('http://51.124.187.58:3000/api/users/verifyUser', {
+            const response = await fetch('/api/users/verifyUser', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
                 body: JSON.stringify({ email, password })
             });
 
             const data = await response.json();
-            
-            if (response.ok) {
-                localStorage.setItem("isLoggedIn", "true");
-                localStorage.setItem("authToken", data.token);
-                localStorage.setItem("email", email);
 
+            if (response.ok) {
                 alert("✅ Login successful!");
-                window.location.href = "index.html";
+                window.location.href = "index.html"; // ✅ Redirect to main page
             } else {
                 alert("❌ Login failed: " + data.error);
             }
@@ -99,9 +93,10 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         try {
-            const response = await fetch('http://51.124.187.58:3000/api/users/addUser', {
+            const response = await fetch('/api/users/addUser', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
                 body: JSON.stringify({ firstName, lastName, email, password })
             });
 
@@ -109,8 +104,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (response.ok) {
                 alert("✅ Account created successfully! You can now log in.");
-                signinForm.style.display = 'block';
                 signupForm.style.display = 'none';
+                signinForm.style.display = 'block';
             } else {
                 alert("❌ Signup failed: " + data.error);
             }

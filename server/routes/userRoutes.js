@@ -52,12 +52,9 @@ router.post('/logout', (req, res) => {
 });
 
 router.post('/logout', (req, res) => {
-  res.clearCookie("sessionID", { httpOnly: true, sameSite: "Lax" }); // 🔥 Clears session cookie
-  req.session.destroy(err => {
-      if (err) {
-          return res.status(500).json({ error: "Logout failed." });
-      }
-      res.json({ success: true, message: "Logged out successfully." });
-  });
+  res.clearCookie("sessionID", { path: "/", httpOnly: true, secure: true, sameSite: "Strict" }); // Clears cookie
+  req.session = null; // If using express-session
+  res.json({ success: true, message: "Logged out successfully!" });
 });
+
 module.exports = router;

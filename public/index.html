@@ -8,6 +8,25 @@
     <link rel="manifest" href="manifest.json">
     <script src="js/index.js" defer></script>
     <script src="js/login.js" defer></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+            try {
+                const response = await fetch("/api/users/isLoggedIn", {
+                    method: "GET",
+                    credentials: "include"
+                });
+
+                const data = await response.json();
+
+                if (!data.loggedIn) {
+                    window.location.href = "login.html"; // Redirect to login if not logged in
+                }
+            } catch (error) {
+                console.error("❌ Error checking login:", error);
+            }
+        });
+    </script>
 </head>
 
 <body>
