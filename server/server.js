@@ -14,11 +14,12 @@ const app = express();
 
 // ✅ Set up sessions
 app.use(session({
-    secret: process.env.SESSION_SECRET || 'supersecretkey',
+    secret: 'your-secret-key',  // Change to a strong secret
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: false } // ✅ Change to `true` if using HTTPS
+    cookie: { secure: false, httpOnly: true } // Set secure: true for HTTPS
 }));
+
 
 // ✅ Serve static frontend files
 app.use(express.static(path.join(__dirname, '../public')));

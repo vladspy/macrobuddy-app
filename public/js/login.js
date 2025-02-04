@@ -1,21 +1,21 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // ✅ Check if user is already logged in via session
+    // ✅ Check if user is already logged in using session
     fetch('http://51.124.187.58:3000/api/users/isLoggedIn', {
         method: 'GET',
-        credentials: 'include' // ✅ Includes session cookies
+        credentials: 'include' // ✅ Include cookies in the request
     })
     .then(response => response.json())
     .then(data => {
         if (data.loggedIn) {
-            window.location.href = "index.html"; // ✅ Redirect if logged in
+            window.location.href = "index.html"; // ✅ Redirect to main page
         }
     })
     .catch(error => console.error("Error checking login status:", error));
 
-    // ✅ Handle Logout (Check if logout button exists)
-    const logoutBtn = document.getElementById("logout-btn");
-    if (logoutBtn) {
-        logoutBtn.addEventListener("click", async () => {
+    // ✅ Handle Logout
+    const logoutButton = document.getElementById("logout-btn");
+    if (logoutButton) {
+        logoutButton.addEventListener("click", async () => {
             await fetch('http://51.124.187.58:3000/api/users/logout', {
                 method: 'POST',
                 credentials: 'include'
@@ -25,11 +25,16 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // ✅ Check if User is Already Logged In using LocalStorage
+    if (localStorage.getItem("isLoggedIn") === "true") {
+        window.location.href = "index.html"; // ✅ Redirect to main page
+    }
+
     // ✅ Handle Sign In
     const signinForm = document.getElementById('signinForm');
     if (signinForm) {
         signinForm.addEventListener('submit', async (event) => {
-            event.preventDefault();
+            event.preventDefault(); // Prevent form submission reload
 
             const email = document.getElementById('signin-email').value;
             const password = document.getElementById('signin-password').value;
@@ -38,14 +43,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 const response = await fetch('http://51.124.187.58:3000/api/users/verifyUser', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, password }),
-                    credentials: 'include' // ✅ Ensure cookies are stored
+                    credentials: 'include', // ✅ Ensure cookies are included
+                    body: JSON.stringify({ email, password })
                 });
 
                 const data = await response.json();
-
+                
                 if (response.ok) {
                     localStorage.setItem("isLoggedIn", "true");  // ✅ Store login status
+                    localStorage.setItem("authToken", data.token);  // ✅ Store token for API requests
                     localStorage.setItem("email", email);  // ✅ Store email
 
                     alert("✅ Login successful!");
