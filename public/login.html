@@ -17,18 +17,19 @@
              <div class="flip-card__inner">
                 <div class="flip-card__front">
                    <div class="title">Log in</div>
-                   <form id="signinForm" class="flip-card__form" action="">
-                      <input id="signin-email" class="flip-card__input" name="email" placeholder="Email" type="email">
-                      <input id="signin-password" class="flip-card__input" name="password" placeholder="Password" type="password">
+                   <form id="signinForm" class="flip-card__form">
+                      <input id="signin-email" class="flip-card__input" name="email" placeholder="Email" type="email" required>
+                      <input id="signin-password" class="flip-card__input" name="password" placeholder="Password" type="password" required>
                       <button type="submit" class="flip-card__btn">Let’s go!</button>
                    </form>
                 </div>
                 <div class="flip-card__back">
                    <div class="title">Sign up</div>
-                   <form id="signupForm" class="flip-card__form" action="">
-                      <input id="signup-name" class="flip-card__input" placeholder="Name" type="text">
-                      <input id="signup-email" class="flip-card__input" name="email" placeholder="Email" type="email">
-                      <input id="signup-password" class="flip-card__input" name="password" placeholder="Password" type="password">
+                   <form id="signupForm" class="flip-card__form">
+                      <input id="signup-firstname" class="flip-card__input" name="firstname" placeholder="First Name" type="text" required>
+                      <input id="signup-lastname" class="flip-card__input" name="lastname" placeholder="Last Name" type="text" required>
+                      <input id="signup-email" class="flip-card__input" name="email" placeholder="Email" type="email" required>
+                      <input id="signup-password" class="flip-card__input" name="password" placeholder="Password" type="password" required>
                       <button type="submit" class="flip-card__btn">Confirm!</button>
                    </form>
                 </div>
