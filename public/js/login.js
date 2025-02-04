@@ -23,26 +23,29 @@ document.addEventListener("DOMContentLoaded", () => {
     }).catch(err => console.error("❌ Error checking login status:", err));
 
     // ✅ Handle Logout
-    if (logoutButton) {
-        logoutButton.addEventListener("click", async () => {
-            try {
-                const response = await fetch('/api/users/logout', {
-                    method: 'POST',
-                    credentials: 'include'
-                });
-
-                if (response.ok) {
+    
+        if (logoutButton) {
+            logoutButton.addEventListener("click", async () => {
+                try {
+                    await fetch('http://51.124.187.58:3000/api/users/logout', {
+                        method: 'POST',
+                        credentials: 'include' // Include credentials to remove session cookies
+                    });
+    
+                    localStorage.removeItem("isLoggedIn");
+                    localStorage.removeItem("authToken");
+                    localStorage.removeItem("email");
+    
                     alert("✅ Logged out successfully!");
-                    window.location.href = "login.html"; // Redirect to login page
-                } else {
-                    alert("❌ Logout failed. Please try again.");
+                    window.location.href = "login.html";
+                } catch (error) {
+                    console.error("❌ Error logging out:", error);
+                    alert("❌ Logout failed.");
                 }
-            } catch (error) {
-                console.error("❌ Error logging out:", error);
-                alert("❌ An error occurred during logout.");
-            }
-        });
-    }
+            });
+        }
+    });
+    
 
     // ✅ Handle Sign In
     signinForm.addEventListener('submit', async (event) => {
@@ -114,4 +117,3 @@ document.addEventListener("DOMContentLoaded", () => {
             alert("❌ An error occurred.");
         }
     });
-});

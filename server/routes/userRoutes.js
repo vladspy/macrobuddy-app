@@ -3,6 +3,7 @@ const router = express.Router();
 const { addUser } = require('../db/addUser');
 const { verifyUser } = require('../db/verifyUser');
 
+// ✅ Register User
 router.post('/addUser', async (req, res) => {
     try {
         const { username, email, password } = req.body;
@@ -28,9 +29,9 @@ router.post('/verifyUser', async (req, res) => {
         if (result.success) {
             // ✅ Store session & set cookie
             req.session.user = { email };
-            res.cookie('sessionID', req.sessionID, { httpOnly: true });
-            
-            res.status(200).json({ success: true, message: 'User verified successfully!' });
+            res.cookie('sessionID', req.sessionID, { httpOnly: true, secure: true, sameSite: "Strict" });
+
+            res.status(200).json({ success: true, message: 'User verified successfully!', token: result.token });
         } else {
             res.status(401).json({ error: 'Invalid email or password.' });
         }
@@ -40,21 +41,24 @@ router.post('/verifyUser', async (req, res) => {
     }
 });
 
+// ✅ Check if User is Logged In
+router.get('/isLoggedIn', (req, res) => {
+    if (req.session.user) {
+        res.json({ loggedIn: true, user: req.session.user });
+    } else {
+        res.json({ loggedIn: false });
+    }
+});
+
 // ✅ Logout Route
 router.post('/logout', (req, res) => {
     req.session.destroy((err) => {
         if (err) {
             return res.status(500).json({ error: "Failed to log out." });
         }
-        res.clearCookie("sessionID");
+        res.clearCookie("sessionID", { path: "/", httpOnly: true, secure: true, sameSite: "Strict" });
         res.json({ success: true, message: "Logged out successfully!" });
     });
-});
-
-router.post('/logout', (req, res) => {
-  res.clearCookie("sessionID", { path: "/", httpOnly: true, secure: true, sameSite: "Strict" }); // Clears cookie
-  req.session = null; // If using express-session
-  res.json({ success: true, message: "Logged out successfully!" });
 });
 
 module.exports = router;
