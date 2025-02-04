@@ -13,12 +13,12 @@ const foodRoutes = require('./routes/foodRoutes');
 const app = express();
 const PORT = process.env.PORT || 3000; // Use environment variable for port
 
-// ✅ Serve frontend from "public" directory
-app.use(express.static(path.join(__dirname, 'public')));
+// ✅ Serve frontend correctly (Fixing the path)
+app.use(express.static(path.join(__dirname, '../public')));
 
 // ✅ Serve index.html when users visit "/"
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.sendFile(path.join(__dirname, '../public', 'index.html'));
 });
 
 // Middleware
