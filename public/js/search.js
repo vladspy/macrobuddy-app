@@ -1,7 +1,13 @@
 const SERVER_IP = "http://51.124.187.58:3000";  // ✅ Your Azure server
 
-document.getElementById("foodSearch").addEventListener("input", async function () {
-    let query = this.value.trim().toLowerCase();
+let debounceTimer; // ✅ Global debounce timer
+
+document.getElementById("foodSearch").addEventListener("input", function () {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => fetchFoodResults(this.value.trim().toLowerCase()), 300); // 🔹 300ms delay
+});
+
+async function fetchFoodResults(query) {
     let resultsContainer = document.getElementById("searchResults");
 
     if (query.length < 2) {
@@ -33,9 +39,9 @@ document.getElementById("foodSearch").addEventListener("input", async function (
         resultsContainer.innerHTML = "<p>Error fetching data.</p>";
         resultsContainer.style.display = "block";
     }
-});
+}
 
-// ✅ Display multiple USDA search results
+// ✅ Display search results dynamically
 function displayFoodResults(foods) {
     let resultsContainer = document.getElementById("searchResults");
     resultsContainer.innerHTML = "";
