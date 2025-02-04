@@ -52,11 +52,7 @@ router.post('/logout', (req, res) => {
 });
 
 router.get('/isLoggedIn', (req, res) => {
-  if (req.session.user) {
-      res.json({ loggedIn: true, user: req.session.user });
-  } else {
-      res.json({ loggedIn: false });
-  }
+  res.json({ loggedIn: req.session.user ? true : false });
 });
 
 module.exports = router;
