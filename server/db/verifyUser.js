@@ -1,143 +1,41 @@
+const jwt = require('jsonwebtoken');
 const argon2 = require('argon2');
-const { connectDB } = require('./db');  // Import your database connection
+const { connectDB } = require('./db');
+
+const SECRET_KEY = process.env.JWT_SECRET || 'your_secret_key_here';
 
 const verifyPassword = async (storedHash, inputPassword) => {
     try {
-        const isMatch = await argon2.verify(storedHash, inputPassword);
-        return isMatch;
+        return await argon2.verify(storedHash, inputPassword);
     } catch (err) {
         console.error('Error verifying password:', err);
         throw err;
     }
 };
 
-/*const verifyUser = async (email, password) => {
-    let connection;
+const verifyUser = async (email, password) => {
     try {
-        connection = await connectDB();  // Establish DB connection
-
-        // Fetch the user's hashed password from the DB using the provided email
-        const [rows] = await connection.execute('SELECT hashed_password FROM user WHERE email = ?', [email]);
+        const connection = await connectDB();
+        const [rows] = await connection.execute('SELECT * FROM user WHERE email = ?', [email]);
 
         if (rows.length === 0) {
-            console.log('User not found!');
-            return false; // User not found
+            return { success: false, error: 'User not found!' };
         }
 
-        const storedHash = rows[0].hashed_password; // The hash stored in the database
-        console.log('Stored Hash:', storedHash); // Ensure this is a valid Argon2 hash
-
-        // Verify the input password against the stored hash
+        const storedHash = rows[0].hashed_password;
         const isValid = await verifyPassword(storedHash, password);
 
         if (isValid) {
-            console.log('Password matches!');
+            const token = jwt.sign({ id: rows[0].id, email: rows[0].email }, SECRET_KEY, { expiresIn: '1h' });
+
+            return { success: true, message: 'User verified successfully!', token };
         } else {
-            console.log('Incorrect password!');
+            return { success: false, error: 'Invalid email or password.' };
         }
+    } catch (error) {
+        console.error('Error verifying user:', error.message);
+        return { success: false, error: 'Internal server error' };
+    }
+};
 
-        return isValid;  // Return the result (true or false)
-    } catch (error) {
-        console.error('Error verifying user:', error);
-        return false;  // Return false in case of an error
-    } finally {
-        if (connection) {
-            connection.release();  // Close DB connection
-        }
-    }
-};*/
-/*const verifyUser  = async (username, password) => {
-    try {
-      const connection = await connectDB();
-      const [rows] = await connection.execute('SELECT * FROM user WHERE username = ?', [username]);
-      if (rows.length === 0) {
-        throw new Error('User  not found!');
-      }
-      const storedHash = rows[0].hashed_password;
-      const isValid = await verifyPassword(storedHash, password);
-      if (isValid) {
-        return { success: true, message: 'User verified successfully!' };
-      } else {
-        throw new Error('Invalid username or password!');
-      }
-    } catch (error) {
-      console.error('Error verifying user:', error.message);
-      throw error;
-    }
-  };*/
-  /*const verifyUser     = async (username, password) => {
-    try {
-      const connection = await connectDB();
-      const [rows] = await connection.execute('SELECT * FROM user WHERE username = ?', [username]);
-      if (rows.length === 0) {
-        return { success: false, error: 'User  not found!' };
-      }
-      const storedHash = rows[0].hashed_password;
-      const isValid = await verifyPassword(storedHash, password);
-      if (isValid) {
-        return { success: true, message: 'User  verified successfully!' };
-      } else {
-        return { success: false, error: 'Invalid username or password!' };
-      }
-    } catch (error) {
-      console.error('Error verifying user:', error.message);
-      return { success: false, error: 'Internal server error' };
-    }
-  };*/
-  const verifyUser = async (email, password) => {
-    try {
-      const connection = await connectDB();
-      const [rows] = await connection.execute('SELECT * FROM user WHERE email = ?', [email]);
-  
-      if (rows.length === 0) {
-        return { success: false, error: 'User not found!' };
-      }
-  
-      const storedHash = rows[0].hashed_password;
-      const isValid = await verifyPassword(storedHash, password);
-  
-      if (isValid) {
-        return { success: true, message: 'User verified successfully!' };
-      } else {
-        return { success: false, error: 'Invalid email or password.' };
-      }
-    } catch (error) {
-      console.error('Error verifying user:', error.message);
-      return { success: false, error: 'Internal server error' };
-    }
-  };
-  
-
-
-
-/*const verifyPassword = async (storedHash, inputPassword) => {
-    try {
-      const isMatch = await argon2.verify(storedHash, inputPassword);
-      return isMatch;
-    } catch (err) {
-      console.error('Error verifying password:', err);
-      throw err;
-    }
-  };
-  
-  const verifyUser   = async (username, password) => {
-    try {
-      const connection = await connectDB();
-      const [rows] = await connection.execute('SELECT * FROM user WHERE username = ?', [username]);
-      if (rows.length === 0) {
-        return { success: false, error: 'User   not found!' };
-      }
-      const storedHash = rows[0].hashed_password;
-      const isValid = await verifyPassword(storedHash, password);
-      if (isValid) {
-        return { success: true, message: 'User   verified successfully!' };
-      } else {
-        return { success: false, error: 'Invalid username or password.' };
-      }
-    } catch (error) {
-      console.error('Error verifying user:', error.message);
-      return { success: false, error: error.message };
-    }
-  };*/
-  
-  module.exports = { verifyUser  };
+module.exports = { verifyUser };
