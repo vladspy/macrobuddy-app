@@ -1,8 +1,7 @@
 const express = require('express');
+const router = express.Router();
 const { addUser } = require('../db/addUser');
 const { verifyUser } = require('../db/verifyUser');
-
-const router = express.Router();
 
 router.post('/addUser', async (req, res) => {
     try {
@@ -20,13 +19,18 @@ router.post('/addUser', async (req, res) => {
     }
 });
 
+// ✅ Handle User Login with Sessions
 router.post('/verifyUser', async (req, res) => {
     try {
         const { email, password } = req.body;
         const result = await verifyUser(email, password);
 
         if (result.success) {
-            res.status(200).json({ success: true, token: result.token, message: 'Login successful!' });
+            // ✅ Store session & set cookie
+            req.session.user = { email };
+            res.cookie('sessionID', req.sessionID, { httpOnly: true });
+            
+            res.status(200).json({ success: true, message: 'User verified successfully!' });
         } else {
             res.status(401).json({ error: 'Invalid email or password.' });
         }
@@ -34,6 +38,25 @@ router.post('/verifyUser', async (req, res) => {
         console.error('Error verifying user:', error.message);
         res.status(500).json({ error: 'Internal server error' });
     }
+});
+
+// ✅ Logout Route
+router.post('/logout', (req, res) => {
+    req.session.destroy((err) => {
+        if (err) {
+            return res.status(500).json({ error: "Failed to log out." });
+        }
+        res.clearCookie("sessionID");
+        res.json({ success: true, message: "Logged out successfully!" });
+    });
+});
+
+router.get('/isLoggedIn', (req, res) => {
+  if (req.session.user) {
+      res.json({ loggedIn: true, user: req.session.user });
+  } else {
+      res.json({ loggedIn: false });
+  }
 });
 
 module.exports = router;

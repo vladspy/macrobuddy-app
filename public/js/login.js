@@ -1,24 +1,26 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const toggleButtons = document.querySelectorAll('.toggle');
-    const signupForm = document.getElementById('signupForm');
-    const signinForm = document.getElementById('signinForm');
-
-    signupForm.style.display = 'none';
-    signinForm.style.display = 'block';
-
-    toggleButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            const targetForm = button.dataset.form;
-
-            if (targetForm === 'signup') {
-                signupForm.style.display = 'block';
-                signinForm.style.display = 'none';
-            } else if (targetForm === 'signin') {
-                signupForm.style.display = 'none';
-                signinForm.style.display = 'block';
-            }
-        });
+    // ✅ Check if user is already logged in using session
+    fetch('http://51.124.187.58:3000/api/users/isLoggedIn', {
+        method: 'GET',
+        credentials: 'include' // ✅ Include cookies in the request
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.loggedIn) {
+            window.location.href = "index.html"; // ✅ Redirect to main page
+        }
     });
+
+    // ✅ Handle Logout
+    document.getElementById("logout-btn").addEventListener("click", async () => {
+        await fetch('http://51.124.187.58:3000/api/users/logout', {
+            method: 'POST',
+            credentials: 'include'
+        });
+        localStorage.clear();
+        window.location.href = "login.html";
+    });
+});
 
     // ✅ Check if User is Already Logged In
     if (localStorage.getItem("isLoggedIn") === "true") {
@@ -87,4 +89,4 @@ document.addEventListener('DOMContentLoaded', () => {
             alert("❌ An error occurred.");
         }
     });
-});
+
