@@ -44,8 +44,3 @@ h2 {
 .result-item:hover {
     background-color: #f0f0f0;
 }
-
-/* ✅ Prevent dropdown flickering */
-.result-item:active {
-    background-color: #e0e0e0;
-}
