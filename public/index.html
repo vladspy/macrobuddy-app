@@ -1,32 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <script>
-        if (!localStorage.getItem("isLoggedIn")) {
-            window.location.href = "login.html";
-        }
-    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
     <title>MacroBuddy PWA</title>
-
-    <!-- CSS -->
     <link rel="stylesheet" href="css/design.css">
-
-    <!-- PWA Manifest -->
     <link rel="manifest" href="manifest.json">
-
-    <!-- JS -->
     <script src="js/index.js" defer></script>
+    <script src="js/login.js" defer></script>
 </head>
 
 <body>
     <div id="bmr-calculator" class="wrapper">
         <div class="calculator">
-            <button type="button" class="exit-btn" onclick="window.location.href='profile.html'"> PROFILE </button>
-            <button type="button" class="exit-btn" onclick="window.location.href='search.html'"> SEARCH </button> <!-- ✅ Added Button -->
+            <button type="button" class="exit-btn" onclick="window.location.href='profile.html'">Profile</button>
+            <button type="button" class="exit-btn" onclick="window.location.href='search.html'">Search</button>
+            <button type="button" id="logout-btn" class="exit-btn">Logout</button>
         </div>
 
         <div class="results">
@@ -35,16 +24,5 @@
             <div id="calc-target-lose">To Lose Weight:<br><span>1900 calories</span></div>
         </div>
     </div>
-
-    <div id="usda-food-search" class="wrapper">
-        <h2>Search the USDA Food Database</h2>
-        <form id="usda-form">
-            <input type="text" id="food-query" placeholder="Enter food item">
-            <button type="submit" id="search-food">Search</button>
-        </form>
-        <div id="food-results"></div>
-    </div>
-
 </body>
-
 </html>

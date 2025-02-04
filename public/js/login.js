@@ -106,4 +106,36 @@ document.addEventListener("DOMContentLoaded", () => {
             alert("❌ An error occurred.");
         }
     });
+
+    // ✅ Check if user is already logged in using session
+    fetch('http://51.124.187.58:3000/api/users/isLoggedIn', {
+        method: 'GET',
+        credentials: 'include' // ✅ Include cookies in the request
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (!data.loggedIn) {
+            window.location.href = "login.html"; // ✅ Redirect to login if not logged in
+        }
+    }).catch(err => console.error("❌ Error checking login status:", err));
+
+    // ✅ Handle Logout
+    if (logoutButton) {
+        logoutButton.addEventListener("click", async () => {
+            try {
+                await fetch('http://51.124.187.58:3000/api/users/logout', {
+                    method: 'POST',
+                    credentials: 'include'
+                });
+
+                localStorage.clear(); // ✅ Clear user data
+                alert("✅ Logged out successfully!");
+                window.location.href = "login.html"; // ✅ Redirect to login page
+            } catch (error) {
+                console.error("❌ Error logging out:", error);
+                alert("❌ Logout failed.");
+            }
+        });
+    }
 });
+

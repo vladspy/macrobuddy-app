@@ -242,3 +242,18 @@ input[type="range"]::-moz-range-thumb {
   background: #1e1e63;
   box-shadow: 0 4px 15px rgba(42, 42, 114, 0.3);
 }
+.exit-btn {
+  background-color: #ff4d4d; /* Red for logout */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  margin: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background 0.3s ease;
+}
+
+.exit-btn:hover {
+  background-color: #cc0000;
+}
