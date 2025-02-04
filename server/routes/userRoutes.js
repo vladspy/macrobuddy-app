@@ -51,8 +51,13 @@ router.post('/logout', (req, res) => {
     });
 });
 
-router.get('/isLoggedIn', (req, res) => {
-  res.json({ loggedIn: req.session.user ? true : false });
+router.post('/logout', (req, res) => {
+  res.clearCookie("sessionID", { httpOnly: true, sameSite: "Lax" }); // 🔥 Clears session cookie
+  req.session.destroy(err => {
+      if (err) {
+          return res.status(500).json({ error: "Logout failed." });
+      }
+      res.json({ success: true, message: "Logged out successfully." });
+  });
 });
-
 module.exports = router;

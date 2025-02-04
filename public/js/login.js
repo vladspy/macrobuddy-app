@@ -22,25 +22,31 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }).catch(err => console.error("❌ Error checking login status:", err));
 
-    // ✅ Handle Logout
-    if (logoutButton) {
-        logoutButton.addEventListener("click", logout);
-    }
 
     function logout() {
         fetch('http://51.124.187.58:3000/api/users/logout', {
             method: 'POST',
-            credentials: 'include'
-        }).then(() => {
-            localStorage.clear();
-            alert("✅ Logged out successfully!");
-            window.location.href = "login.html"; // ✅ Redirect to login page
-        }).catch(error => {
+            credentials: 'include' // ✅ Makes sure cookies are included in the request
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                localStorage.clear(); // ✅ Clear user data
+                document.cookie = "sessionID=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                alert("✅ Logged out successfully!");
+                window.location.href = "login.html"; // ✅ Redirect to login page
+            } else {
+                alert("❌ Logout failed: " + data.error);
+            }
+        })
+        .catch(error => {
             console.error("❌ Error logging out:", error);
             alert("❌ Logout failed.");
         });
     }
-
+    
+    // Attach logout event listener
+    document.getElementById("logout-btn").addEventListener("click", logout);
     // ✅ Handle Sign In
     signinForm.addEventListener('submit', async (event) => {
         event.preventDefault(); // Prevent form submission reload
