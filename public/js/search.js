@@ -1,4 +1,4 @@
-const SERVER_IP = "http://51.124.187.58:3000";  // ✅ Use your Azure server
+const SERVER_IP = "http://51.124.187.58:3000";  // ✅ Your Azure server
 
 document.getElementById("foodSearch").addEventListener("input", async function () {
     let query = this.value.trim().toLowerCase();
@@ -15,7 +15,6 @@ document.getElementById("foodSearch").addEventListener("input", async function (
     }
 
     try {
-        // ✅ Ensure the API URL is correct
         let response = await fetch(`${SERVER_IP}/api/food/search?query=${encodeURIComponent(query)}`);
         if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
 
@@ -36,23 +35,20 @@ document.getElementById("foodSearch").addEventListener("input", async function (
     }
 });
 
-// ✅ Display all search results
+// ✅ Display multiple USDA search results
 function displayFoodResults(foods) {
     let resultsContainer = document.getElementById("searchResults");
     resultsContainer.innerHTML = "";
 
-    foods.slice(0, 10).forEach(food => {
+    foods.forEach(food => {
         let resultItem = document.createElement("div");
         resultItem.classList.add("result-item");
         resultItem.innerHTML = `
-            <strong>${food.description}</strong><br>
-            Calories: ${food.foodNutrients?.find(nutrient => nutrient.nutrientName === "Energy")?.value || "N/A"} kcal,
-            Protein: ${food.foodNutrients?.find(nutrient => nutrient.nutrientName === "Protein")?.value || "N/A"}g,
-            Carbs: ${food.foodNutrients?.find(nutrient => nutrient.nutrientName === "Carbohydrate, by difference")?.value || "N/A"}g,
-            Fats: ${food.foodNutrients?.find(nutrient => nutrient.nutrientName === "Total lipid (fat)")?.value || "N/A"}g
+            <strong>${food.product_name}</strong><br>
+            Calories: ${food.energy_kcal} kcal, Protein: ${food.protein}g, Carbs: ${food.carbs}g, Fats: ${food.fats}g
         `;
         resultItem.onclick = () => {
-            document.getElementById("foodSearch").value = food.description;
+            document.getElementById("foodSearch").value = food.product_name;
             resultsContainer.style.display = "none";
         };
         resultsContainer.appendChild(resultItem);
@@ -61,7 +57,7 @@ function displayFoodResults(foods) {
     resultsContainer.style.display = "block";
 }
 
-// ✅ Hide dropdown when clicking outside
+// ✅ Hide results dropdown when clicking outside
 document.addEventListener("click", function (event) {
     if (!event.target.closest("#searchResults") && !event.target.closest("#foodSearch")) {
         document.getElementById("searchResults").style.display = "none";
