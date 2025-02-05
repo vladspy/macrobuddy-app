@@ -4,17 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>MacroBuddy PWA</title>
+
     <link rel="stylesheet" href="css/design.css">
     <link rel="manifest" href="manifest.json">
+
     <script src="js/index.js" defer></script>
-    <script src="js/login.js" defer></script>
+    <script src="js/logout.js" defer></script> <!-- ✅ Load logout.js separately -->
 
     <script>
         document.addEventListener("DOMContentLoaded", async () => {
             try {
                 const response = await fetch("/api/users/isLoggedIn", {
                     method: "GET",
-                    credentials: "include"
+                    credentials: "include",
                 });
 
                 const data = await response.json();
@@ -34,7 +36,7 @@
         <div class="calculator">
             <button type="button" class="exit-btn" onclick="window.location.href='profile.html'">Profile</button>
             <button type="button" class="exit-btn" onclick="window.location.href='search.html'">Search</button>
-            <button type="button" id="logout-btn" class="exit-btn">Logout</button>
+            <button type="button" id="logout-btn" class="exit-btn">Logout</button> <!-- ✅ Logout Button -->
         </div>
 
         <div class="results">

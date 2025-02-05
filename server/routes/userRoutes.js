@@ -1,27 +1,29 @@
-const express = require('express');
+const express = require("express");
+
 const router = express.Router();
-const { addUser } = require('../db/addUser');
-const { verifyUser } = require('../db/verifyUser');
+
+const { addUser } = require("../db/addUser");
+const { verifyUser } = require("../db/verifyUser");
 
 // ✅ Register User
-router.post('/addUser', async (req, res) => {
+router.post("/addUser", async (req, res) => {
     try {
         const { username, email, password } = req.body;
         const result = await addUser(username, email, password);
 
         if (result.success) {
-            res.status(201).json({ message: 'User added successfully!' });
+            res.status(201).json({ message: "User added successfully!" });
         } else {
             res.status(400).json({ error: result.error });
         }
     } catch (error) {
-        console.error('Error adding user:', error);
-        res.status(500).json({ error: 'Failed to add user.' });
+        console.error("Error adding user:", error);
+        res.status(500).json({ error: "Failed to add user." });
     }
 });
 
-// ✅ Handle User Login with Sessions
-router.post('/verifyUser', async (req, res) => {
+// ✅ Handle User Login with JWTs
+router.post("/verifyUser", async (req, res) => {
     try {
         console.log("🔍 Login attempt:", req.body);
 
@@ -35,30 +37,26 @@ router.post('/verifyUser', async (req, res) => {
         if (result.success) {
             console.log("✅ User verified:", email);
 
-            // ✅ Store session & set cookie
-            req.session.user = { email };
-            res.cookie('sessionID', req.sessionID, { httpOnly: true, secure: false, sameSite: "Strict" });
-
-            return res.status(200).json({ success: true, message: 'User verified successfully!', token: result.token });
+            // ✅ Send token to client
+            return res.status(200).json({
+                success: true,
+                message: "User verified successfully!",
+                token: result.token, // ✅ Send JWT to frontend
+            });
         } else {
             console.log("❌ Invalid credentials for:", email);
-            return res.status(401).json({ error: 'Invalid email or password.' });
+            return res.status(401).json({ error: "Invalid email or password." });
         }
     } catch (error) {
         console.error("❌ Error verifying user:", error.message);
-        res.status(500).json({ error: 'Internal server error' });
+        res.status(500).json({ error: "Internal server error" });
     }
 });
 
-// ✅ Logout Route
-router.post('/logout', (req, res) => {
-    req.session.destroy((err) => {
-        if (err) {
-            return res.status(500).json({ error: "Failed to log out." });
-        }
-        res.clearCookie("sessionID", { path: "/", httpOnly: true, secure: true, sameSite: "Strict" });
-        res.json({ success: true, message: "Logged out successfully!" });
-    });
+// ✅ Logout Route (Clears client-side token)
+router.post("/logout", (req, res) => {
+    res.clearCookie("authToken", { path: "/", httpOnly: true, secure: true, sameSite: "Strict" });
+    res.json({ success: true, message: "Logged out successfully!" });
 });
 
 module.exports = router;
