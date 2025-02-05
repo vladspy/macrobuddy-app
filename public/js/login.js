@@ -50,11 +50,11 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // ✅ Handle Sign Up
+    // ✅ Handle Sign Up (Updated to store username and redirect to profile)
     signupForm.addEventListener('submit', async (event) => {
         event.preventDefault();
 
-        const username = document.getElementById('signup-username').value;
+        const username = document.getElementById('signup-username').value; // Updated field
         const email = document.getElementById('signup-email').value;
         const password = document.getElementById('signup-password').value;
 
@@ -70,15 +70,21 @@ document.addEventListener("DOMContentLoaded", () => {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
-                body: JSON.stringify({ username, email, password })
+                body: JSON.stringify({ username, email, password }) // Ensure `username` is sent
             });
 
             const data = await response.json();
 
             if (response.ok) {
-                alert("✅ Account created successfully! You can now log in.");
-                signupForm.style.display = 'none';
-                signinForm.style.display = 'block';
+                alert("✅ Account created successfully!");
+
+                // ✅ Store session details
+                localStorage.setItem("isLoggedIn", "true");
+                localStorage.setItem("email", email);
+                localStorage.setItem("username", username); // ✅ Store username
+
+                // ✅ Redirect to Profile Page instead of Index
+                window.location.href = "profile.html";
             } else {
                 alert("❌ Signup failed: " + data.error);
             }
