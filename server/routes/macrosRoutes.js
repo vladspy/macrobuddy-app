@@ -1,5 +1,3 @@
-// routes/macrosRoutes.js
-
 const express = require('express');
 const router = express.Router();
 const Joi = require('joi');
@@ -8,6 +6,7 @@ const { addMacro, getMacros } = require('../db/macros');
 // Validation schema for adding macros
 const addMacrosSchema = Joi.object({
   userId: Joi.number().integer().required(),
+  food_name: Joi.string().required(),
   protein: Joi.number().required(),
   carbs: Joi.number().required(),
   fats: Joi.number().required(),
@@ -19,30 +18,33 @@ const getMacrosSchema = Joi.object({
   userId: Joi.number().integer().required(),
 });
 
+// ✅ Route to add macros
 router.post('/addMacros', async (req, res) => {
-  const { userId, protein, carbs, fats, calories, foodName } = req.body;
-
-  if (!userId || !foodName || !calories) {
-      return res.status(400).json({ error: "Missing required fields" });
+  const { error, value } = addMacrosSchema.validate(req.body);
+  if (error) {
+    return res.status(400).json({ error: error.details[0].message });
   }
 
+  const { userId, food_name, protein, carbs, fats, calories } = value;
+
   try {
-      await addMacro(userId, { foodName, protein, carbs, fats, calories });
-      res.status(201).json({ message: 'Macros added successfully!' });
+    await addMacro(userId, { food_name, protein, carbs, fats, calories });
+    res.status(201).json({ message: 'Macros added successfully!' });
   } catch (err) {
-      console.error('Error adding macros:', err.message);
-      res.status(500).json({ error: 'Internal server error' });
+    console.error('Error adding macros:', err.message);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
+// ✅ Route to get macros
 router.get('/getMacros', async (req, res) => {
-  // Validate query
   const { error, value } = getMacrosSchema.validate(req.query);
   if (error) {
     return res.status(400).json({ error: error.details[0].message });
   }
 
   const { userId } = value;
+
   try {
     const macroData = await getMacros(userId);
     if (!macroData || macroData.length === 0) {

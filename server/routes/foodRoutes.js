@@ -19,10 +19,10 @@ router.get("/search", async (req, res) => {
 
         console.log(`🔍 Searching USDA API for: ${query}`);
 
-        // ✅ Request multiple results (increased pageSize to 10)
+        // ✅ Request multiple results (pageSize = 10)
         const params = new URLSearchParams({
             query,
-            pageSize: 10,  // 🔹 Increased from 1 to 10 results
+            pageSize: 10,  
             api_key: USDA_API_KEY
         });
 
@@ -45,7 +45,7 @@ router.get("/search", async (req, res) => {
             ...extractMacronutrients(foodItem)
         }));
 
-        res.json({ foods: foodResults });  // ✅ Return an array instead of a single object
+        res.json({ foods: foodResults });
     } catch (error) {
         console.error(`❌ Error fetching USDA food data:`, error.response?.data || error.message);
         res.status(500).json({ error: "Failed to retrieve food data" });
