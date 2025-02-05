@@ -1,6 +1,8 @@
 const SERVER_IP = "http://51.124.187.58:3000"; // ✅ Your Azure server
 
 let debounceTimer;
+
+// ✅ Attach event listener to food search input
 document.getElementById("foodSearch").addEventListener("input", function () {
     clearTimeout(debounceTimer);
     debounceTimer = setTimeout(() => fetchFoodResults(this.value.trim().toLowerCase()), 300);
@@ -63,8 +65,14 @@ function displayFoodResults(foods) {
 
 // ✅ Add selected food to the list and database
 async function addFoodToList(food) {
-    let userId = 1; // ✅ Replace with logged-in user ID
+    let userId = 1; // ✅ Replace with actual logged-in user ID
     let foodList = document.getElementById("foodEntries");
+
+    let foodItem = document.createElement("li");
+    foodItem.textContent = `${food.product_name} - ${food.energy_kcal} kcal`;
+    foodList.appendChild(foodItem);
+
+    updateMacroTotals(food); // ✅ Update the macro totals after adding food
 
     try {
         let response = await fetch(`${SERVER_IP}/api/macros/addMacros`, {
@@ -72,7 +80,7 @@ async function addFoodToList(food) {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 userId,
-                food_name: food.product_name,  // ✅ Make sure this is sent
+                food_name: food.product_name,  // ✅ Ensure this is being sent
                 protein: food.protein,
                 carbs: food.carbs,
                 fats: food.fats,
@@ -80,12 +88,46 @@ async function addFoodToList(food) {
             })
         });
 
-        if (!response.ok) throw new Error("Error adding food to database");
-
-        let foodItem = document.createElement("li");
-        foodItem.textContent = `${food.product_name} - ${food.energy_kcal} kcal`;
-        foodList.appendChild(foodItem);
+        let data = await response.json();
+        if (!response.ok) throw new Error(data.error || "Error adding food to database");
     } catch (error) {
         console.error("❌ Error adding food:", error);
     }
 }
+
+// ✅ Update total macros dynamically
+function updateMacroTotals(food) {
+    document.getElementById("totalCalories").textContent =
+        parseFloat(document.getElementById("totalCalories").textContent) + food.energy_kcal;
+    document.getElementById("totalProtein").textContent =
+        parseFloat(document.getElementById("totalProtein").textContent) + food.protein;
+    document.getElementById("totalCarbs").textContent =
+        parseFloat(document.getElementById("totalCarbs").textContent) + food.carbs;
+    document.getElementById("totalFats").textContent =
+        parseFloat(document.getElementById("totalFats").textContent) + food.fats;
+}
+
+// ✅ Fetch and display user's stored food on page load
+async function loadUserMacros() {
+    let userId = 1; // ✅ Replace with actual logged-in user ID
+    try {
+        let response = await fetch(`${SERVER_IP}/api/macros/getMacros?userId=${userId}`);
+        let data = await response.json();
+
+        if (!response.ok) throw new Error(data.error || "Error fetching macros");
+
+        data.forEach(food => {
+            let foodList = document.getElementById("foodEntries");
+            let foodItem = document.createElement("li");
+            foodItem.textContent = `${food.food_name} - ${food.calories} kcal`;
+            foodList.appendChild(foodItem);
+
+            updateMacroTotals(food);
+        });
+    } catch (error) {
+        console.error("❌ Error loading macros:", error);
+    }
+}
+
+// ✅ Load stored food when the page loads
+document.addEventListener("DOMContentLoaded", loadUserMacros);

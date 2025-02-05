@@ -48,6 +48,7 @@ const addMacro = async (userId, macros) => {
   return insertResult;
 };
 
+
 /**
  * Truncate the macros table (for tests).
  * @returns {Promise<{message: string}>}
