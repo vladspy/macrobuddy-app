@@ -27,21 +27,23 @@ const getMacros = async (userId) => {
 const addMacro = async (userId, macros) => {
   const connection = await connectDB();
 
-  // Check if user exists
+  // Ensure user exists before inserting
   const [userRows] = await connection.execute(
-    'SELECT * FROM user WHERE user_id = ?',
-    [userId]
+      'SELECT * FROM user WHERE user_id = ?',
+      [userId]
   );
+
   if (userRows.length === 0) {
-    connection.release();
-    throw new Error(`User with ID ${userId} does not exist`);
+      connection.release();
+      throw new Error(`User with ID ${userId} does not exist`);
   }
 
-  // Insert macros
+  // ✅ Ensure `food_name` is included in the INSERT statement
   const [insertResult] = await connection.execute(
-    'INSERT INTO macros (user_id, protein, carbs, fats, calories) VALUES (?, ?, ?, ?, ?)',
-    [userId, macros.protein, macros.carbs, macros.fats, macros.calories]
+      'INSERT INTO macros (user_id, food_name, protein, carbs, fats, calories) VALUES (?, ?, ?, ?, ?, ?)',
+      [userId, macros.food_name, macros.protein, macros.carbs, macros.fats, macros.calories]
   );
+
   connection.release();
   return insertResult;
 };

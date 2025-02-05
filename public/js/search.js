@@ -72,7 +72,7 @@ async function addFoodToList(food) {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 userId,
-                food_name: food.product_name,
+                food_name: food.product_name,  // ✅ Make sure this is sent
                 protein: food.protein,
                 carbs: food.carbs,
                 fats: food.fats,
