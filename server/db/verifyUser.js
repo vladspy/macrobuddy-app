@@ -13,12 +13,15 @@ const verifyPassword = async (storedHash, inputPassword) => {
     }
 };
 
-const verifyUser = async (email, password, res) => {
+const verifyUser = async (email, password) => {
     try {
+        console.log("🔍 Login attempt:", email, password);
+
         const connection = await connectDB();
         const [rows] = await connection.execute('SELECT * FROM user WHERE email = ?', [email]);
 
         if (rows.length === 0) {
+            console.log("❌ User not found:", email);
             return { success: false, error: 'User not found!' };
         }
 
@@ -26,26 +29,16 @@ const verifyUser = async (email, password, res) => {
         const isValid = await verifyPassword(storedHash, password);
 
         if (isValid) {
-            const token = jwt.sign(
-                { id: rows[0].id, email: rows[0].email },
-                SECRET_KEY,
-                { expiresIn: '1h' }
-            );
+            const token = jwt.sign({ id: rows[0].id, email: rows[0].email }, SECRET_KEY, { expiresIn: '1h' });
 
-            // Set token in HTTP-only cookie
-            res.cookie('authToken', token, {
-                httpOnly: true,
-                secure: true, // Set to true if using HTTPS
-                sameSite: 'Strict',
-                maxAge: 3600000 // 1 hour
-            });
-
-            return { success: true, message: 'User verified successfully!' };
+            console.log("✅ User verified successfully:", email);
+            return { success: true, message: 'User verified successfully!', token };
         } else {
+            console.log("❌ Invalid credentials for:", email);
             return { success: false, error: 'Invalid email or password.' };
         }
     } catch (error) {
-        console.error('Error verifying user:', error.message);
+        console.error('❌ Error verifying user:', error.message);
         return { success: false, error: 'Internal server error' };
     }
 };
