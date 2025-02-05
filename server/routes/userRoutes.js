@@ -23,20 +23,29 @@ router.post('/addUser', async (req, res) => {
 // ✅ Handle User Login with Sessions
 router.post('/verifyUser', async (req, res) => {
     try {
+        console.log("🔍 Login attempt:", req.body);
+
         const { email, password } = req.body;
+        if (!email || !password) {
+            return res.status(400).json({ error: "Missing email or password" });
+        }
+
         const result = await verifyUser(email, password);
 
         if (result.success) {
+            console.log("✅ User verified:", email);
+
             // ✅ Store session & set cookie
             req.session.user = { email };
-            res.cookie('sessionID', req.sessionID, { httpOnly: true, secure: true, sameSite: "Strict" });
+            res.cookie('sessionID', req.sessionID, { httpOnly: true, secure: false, sameSite: "Strict" });
 
-            res.status(200).json({ success: true, message: 'User verified successfully!', token: result.token });
+            return res.status(200).json({ success: true, message: 'User verified successfully!', token: result.token });
         } else {
-            res.status(401).json({ error: 'Invalid email or password.' });
+            console.log("❌ Invalid credentials for:", email);
+            return res.status(401).json({ error: 'Invalid email or password.' });
         }
     } catch (error) {
-        console.error('Error verifying user:', error.message);
+        console.error("❌ Error verifying user:", error.message);
         res.status(500).json({ error: 'Internal server error' });
     }
 });

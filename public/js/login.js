@@ -2,49 +2,50 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log("✅ login.js loaded successfully!");
 
     const signinForm = document.getElementById('signinForm');
-    const signupForm = document.getElementById('signupForm');
-    const logoutButton = document.getElementById("logout-btn");
 
-    if (!signinForm || !signupForm) {
-        console.error("❌ Form elements not found. Ensure IDs are correct in login.html.");
-        return;
-    }
+    signinForm.addEventListener('submit', async (event) => {
+        event.preventDefault(); // Prevent form submission reload
 
-    // ✅ Check if user is already logged in using session
-    fetch('/api/users/isLoggedIn', {
-        method: 'GET',
-        credentials: 'include' // ✅ Include cookies in the request
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.loggedIn) {
-            window.location.href = "index.html"; // ✅ Redirect to main page
+        const email = document.getElementById('signin-email').value;
+        const password = document.getElementById('signin-password').value;
+
+        if (!email || !password) {
+            alert("❌ Please fill out all fields.");
+            return;
         }
-    }).catch(err => console.error("❌ Error checking login status:", err));
 
-    // ✅ Handle Logout
-    
-        if (logoutButton) {
-            logoutButton.addEventListener("click", async () => {
-                try {
-                    await fetch('http://51.124.187.58:3000/api/users/logout', {
-                        method: 'POST',
-                        credentials: 'include' // Include credentials to remove session cookies
-                    });
-    
-                    localStorage.removeItem("isLoggedIn");
-                    localStorage.removeItem("authToken");
-                    localStorage.removeItem("email");
-    
-                    alert("✅ Logged out successfully!");
-                    window.location.href = "login.html";
-                } catch (error) {
-                    console.error("❌ Error logging out:", error);
-                    alert("❌ Logout failed.");
-                }
+        try {
+            console.log("🔍 Sending login request...");
+
+            const response = await fetch('http://51.124.187.58:3000/api/users/verifyUser', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({ email, password }) // ✅ Make sure data is sent correctly
             });
+
+            const data = await response.json();
+            
+            if (response.ok) {
+                console.log("✅ Login successful!");
+
+                localStorage.setItem("isLoggedIn", "true");
+                localStorage.setItem("authToken", data.token);
+                localStorage.setItem("email", email);
+
+                alert("✅ Login successful!");
+                window.location.href = "index.html";
+            } else {
+                console.error("❌ Login failed:", data.error);
+                alert("❌ Login failed: " + data.error);
+            }
+        } catch (error) {
+            console.error("❌ Error logging in:", error);
+            alert("❌ An error occurred.");
         }
     });
+});
+
     
 
     // ✅ Handle Sign In
