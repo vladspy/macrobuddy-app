@@ -20,20 +20,18 @@ const getMacrosSchema = Joi.object({
 });
 
 router.post('/addMacros', async (req, res) => {
-  // Validate input
-  const { error, value } = addMacrosSchema.validate(req.body);
-  if (error) {
-    return res.status(400).json({ error: error.details[0].message });
+  const { userId, protein, carbs, fats, calories, foodName } = req.body;
+
+  if (!userId || !foodName || !calories) {
+      return res.status(400).json({ error: "Missing required fields" });
   }
 
-  const { userId, protein, carbs, fats, calories } = value;
   try {
-    await addMacro(userId, { protein, carbs, fats, calories });
-    res.status(201).json({ message: 'Macros added successfully!' });
+      await addMacro(userId, { foodName, protein, carbs, fats, calories });
+      res.status(201).json({ message: 'Macros added successfully!' });
   } catch (err) {
-    console.error('Error adding macros:', err.message);
-    // If user doesn't exist, or DB error
-    return res.status(400).json({ error: err.message });
+      console.error('Error adding macros:', err.message);
+      res.status(500).json({ error: 'Internal server error' });
   }
 });
 
