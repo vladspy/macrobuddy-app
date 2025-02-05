@@ -50,15 +50,6 @@ router.post('/verifyUser', async (req, res) => {
     }
 });
 
-// ✅ Check if User is Logged In
-router.get('/isLoggedIn', (req, res) => {
-    if (req.session.user) {
-        res.json({ loggedIn: true, user: req.session.user });
-    } else {
-        res.json({ loggedIn: false });
-    }
-});
-
 // ✅ Logout Route
 router.post('/logout', (req, res) => {
     req.session.destroy((err) => {
