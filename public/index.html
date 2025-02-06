@@ -14,6 +14,7 @@
 
   <script>
     document.addEventListener("DOMContentLoaded", async () => {
+      // Check if the user is logged in
       try {
         const response = await fetch("/api/users/isLoggedIn", {
           method: "GET",
@@ -26,11 +27,39 @@
       } catch (error) {
         console.error("❌ Error checking login:", error);
       }
+
+      // Retrieve the food data stored by the search page
+      const storedData = localStorage.getItem('foodData');
+      if (storedData) {
+        const foodData = JSON.parse(storedData);
+
+        // Update the progress bars (using search page values)
+        document.getElementById('energy').textContent = `${foodData.calories} / 3434 kcal`;
+        document.getElementById('protein').textContent = `${foodData.protein} / 172 g`;
+        document.getElementById('carbs').textContent = `${foodData.carbs} / 429 g`;
+        document.getElementById('fat').textContent = `${foodData.fats} / 115 g`;
+
+        // Populate the food table with dynamic rows matching the search page
+        const tbody = document.querySelector('.food-table tbody');
+        tbody.innerHTML = ""; // Clear any existing rows
+        foodData.foodItems.forEach(item => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${item.time}</td>
+            <td>${item.food}</td>
+            <td>${item.calories}</td>
+            <td>${item.protein}</td>
+            <td>${item.carbs}</td>
+            <td>${item.fat}</td>
+          `;
+          tbody.appendChild(row);
+        });
+      }
     });
   </script>
 </head>
 <body>
-  <!-- Top Bar (removed time and date) -->
+  <!-- Top Bar (empty as requested) -->
   <div class="top-bar"></div>
 
   <!-- Main Content Area using the tracker container layout -->
@@ -66,15 +95,7 @@
         </tr>
       </thead>
       <tbody>
-        <!-- Example row; dynamically generate rows as needed -->
-        <tr>
-          <td>08:00</td>
-          <td>Oatmeal</td>
-          <td>150</td>
-          <td>5g</td>
-          <td>27g</td>
-          <td>3g</td>
-        </tr>
+        <!-- Dynamic rows will be added here based on the stored data -->
       </tbody>
     </table>
   </div>
