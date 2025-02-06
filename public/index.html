@@ -38,11 +38,8 @@
 
   <!-- Main Content Area using the tracker container layout -->
   <div class="tracker-container">
-    <!-- MacroBuddy Section (modified: only Logout remains) -->
+    <!-- MacroBuddy Results Section (no top buttons now) -->
     <div id="bmr-calculator" class="wrapper">
-      <div class="calculator">
-        <button type="button" id="logout-btn" class="exit-btn">Logout</button>
-      </div>
       <div class="results">
         <div id="calc-target-gain">
           To Gain Weight:<br><span>2700 calories</span>
@@ -75,17 +72,14 @@
     </div>
   </div>
 
-  <!-- Bottom Navigation (modified: second button is Profile) -->
+  <!-- Bottom Navigation -->
   <div class="bottom-nav">
     <button class="nav-btn active" onclick="changeTab(event, 'Tracking')">Tracking</button>
-    <button class="nav-btn" onclick="window.location.href='profile.html'">Profile</button>
-    <button class="nav-btn" onclick="changeTab(event, 'Settings')">Settings</button>
+    <button class="nav-btn" onclick="window.location.href='nutritionPage.html'">Nutrition</button>
+    <button class="nav-btn" id="logout-btn">Logout</button>
   </div>
 
-  <!-- Floating Button: Circle with a Cross (×) that redirects to search -->
-  <button class="add-btn" onclick="window.location.href='search.html'">×</button>
-
-  <!-- Script for Nutrition Tracker functionality -->
+  <!-- Script for additional functionality -->
   <script src="js/index.js"></script>
 </body>
 </html>
