@@ -100,6 +100,28 @@ input:focus, select:focus {
   transform: scale(0.98); /* Slight click effect */
 }
 
+#backToIndex {
+  width: 100%;
+  padding: 12px;
+  margin-top: 15px;
+  background: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  transition: background 0.3s ease;
+}
+
+#backToIndex:hover {
+  background: #45a049;
+}
+
+#backToIndex:active {
+  transform: scale(0.98);
+}
+
 /* Additional improvements for better spacing and aesthetics */
 .container > *:last-child {
   margin-bottom: 0; /* Removes extra margin for the last element */
