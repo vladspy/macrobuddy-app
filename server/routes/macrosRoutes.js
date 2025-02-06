@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Joi = require('joi');
-const { addMacro, getMacros } = require('../db/macros');
+const { addMacro, getMacros, deleteLastMacro } = require('../db/macros');
 
 // Validation schema for adding macros
 const addMacrosSchema = Joi.object({
@@ -34,8 +34,7 @@ router.post('/addMacros', async (req, res) => {
       res.status(500).json({ error: 'Internal server error' });
   }
 });
-
-
+  
 // ✅ Route to get macros
 router.get('/getMacros', async (req, res) => {
   const { error, value } = getMacrosSchema.validate(req.query);
@@ -54,6 +53,21 @@ router.get('/getMacros', async (req, res) => {
   } catch (err) {
     console.error('Error retrieving macros:', err.message);
     res.status(500).json({ error: 'Internal server error while retrieving macros.' });
+  }
+});
+
+// ✅ Route to delete the last macro entry for a user
+router.delete('/deleteLast', async (req, res) => {
+  const userId = parseInt(req.query.userId, 10);
+  if (!userId) {
+    return res.status(400).json({ error: "Missing or invalid userId" });
+  }
+  try {
+    const deletedMacro = await deleteLastMacro(userId);
+    res.status(200).json({ message: 'Last macro deleted successfully!', deletedMacro });
+  } catch (err) {
+    console.error('Error deleting macro:', err.message);
+    res.status(500).json({ error: err.message });
   }
 });
 

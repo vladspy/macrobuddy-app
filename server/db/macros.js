@@ -21,7 +21,7 @@ const getMacros = async (userId) => {
  * Add macro data for a user.
  * Checks if the user exists first (by user_id).
  * @param {number} userId - The user ID.
- * @param {object} macros - The macros object (protein, carbs, fats, calories).
+ * @param {object} macros - The macros object (protein, carbs, fats, calories, food_name).
  * @returns {Promise<object>} - The result of the INSERT query.
  */
 const addMacro = async (userId, macros) => {
@@ -48,6 +48,35 @@ const addMacro = async (userId, macros) => {
   return insertResult;
 };
 
+/**
+ * Delete the last macro entry for a user.
+ * @param {number} userId - The user ID.
+ * @returns {Promise<object>} - The deleted macro record.
+ */
+const deleteLastMacro = async (userId) => {
+  const connection = await connectDB();
+
+  // Get the last macro record for the user (assumes primary key column is named `id`)
+  const [rows] = await connection.execute(
+    'SELECT * FROM macros WHERE user_id = ? ORDER BY id DESC LIMIT 1',
+    [userId]
+  );
+
+  if (rows.length === 0) {
+    connection.release();
+    throw new Error("No macro entries found to delete.");
+  }
+
+  const lastMacro = rows[0];
+
+  await connection.execute(
+    'DELETE FROM macros WHERE id = ?',
+    [lastMacro.id]
+  );
+
+  connection.release();
+  return lastMacro;
+};
 
 /**
  * Truncate the macros table (for tests).
@@ -60,4 +89,4 @@ const truncateMacros = async () => {
   return { message: 'Macros table has been truncated' };
 };
 
-module.exports = { getMacros, addMacro, truncateMacros };
+module.exports = { getMacros, addMacro, deleteLastMacro, truncateMacros };

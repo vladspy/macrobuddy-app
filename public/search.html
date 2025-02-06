@@ -1,33 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Food Search</title>
-  <link rel="stylesheet" href="css/search.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Search</title>
+    <link rel="stylesheet" href="css/search.css"> <!-- ✅ Uses updated CSS -->
 </head>
 <body>
-  <h2>Food Search</h2>
-  
-  <!-- Search Input -->
-  <input type="text" id="foodSearch" placeholder="Search for food..." autocomplete="off">
-  <div id="searchResults"></div>
-  
-  <!-- Selected Food List -->
-  <div id="foodList">
-    <h3>Selected Foods</h3>
-    <ul id="foodEntries"></ul>
-  </div>
-  
-  <!-- Total Macros Display -->
-  <div id="totalMacros">
-    <h3>Daily Total:</h3>
-    <p>Calories: <span id="totalCalories">0</span> kcal</p>
-    <p>Protein: <span id="totalProtein">0</span> g</p>
-    <p>Carbs: <span id="totalCarbs">0</span> g</p>
-    <p>Fats: <span id="totalFats">0</span> g</p>
-  </div>
-  
-  <script src="js/search.js" defer></script>
+    <h2>Food Search</h2>
+
+    <!-- ✅ Search Input -->
+    <input type="text" id="foodSearch" placeholder="Search for food..." autocomplete="off">
+    <div id="searchResults"></div>
+
+    <!-- ✅ Selected Food List -->
+    <div id="foodList">
+        <h3>Selected Foods</h3>
+        <ul id="foodEntries"></ul> <!-- This will hold the added foods -->
+        <!-- ✅ Delete Last Food Button -->
+        <button id="deleteLast">Delete Last Food</button>
+    </div>
+
+    <!-- ✅ Total Macros Display -->
+    <div id="totalMacros">
+        <h3>Daily Total:</h3>
+        <p>Calories: <span id="totalCalories">0</span> kcal</p>
+        <p>Protein: <span id="totalProtein">0</span> g</p>
+        <p>Carbs: <span id="totalCarbs">0</span> g</p>
+        <p>Fats: <span id="totalFats">0</span> g</p>
+    </div>
+
+    <script src="js/search.js" defer></script>
 </body>
 </html>
