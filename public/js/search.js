@@ -96,7 +96,7 @@ async function addFoodToList(food) {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                userId,
+                userId: parseInt(userId), // ✅ Ensure userId is sent as a number
                 food_name: food.product_name,
                 protein: food.protein,
                 carbs: food.carbs,
@@ -116,14 +116,15 @@ async function addFoodToList(food) {
 
 // ✅ Update total macros dynamically
 function updateMacroTotals(food) {
-    document.getElementById("totalCalories").textContent =
-        parseFloat(document.getElementById("totalCalories").textContent) + food.energy_kcal;
-    document.getElementById("totalProtein").textContent =
-        parseFloat(document.getElementById("totalProtein").textContent) + food.protein;
-    document.getElementById("totalCarbs").textContent =
-        parseFloat(document.getElementById("totalCarbs").textContent) + food.carbs;
-    document.getElementById("totalFats").textContent =
-        parseFloat(document.getElementById("totalFats").textContent) + food.fats;
+    let totalCalories = document.getElementById("totalCalories");
+    let totalProtein = document.getElementById("totalProtein");
+    let totalCarbs = document.getElementById("totalCarbs");
+    let totalFats = document.getElementById("totalFats");
+
+    totalCalories.textContent = (parseFloat(totalCalories.textContent) + food.energy_kcal).toFixed(2);
+    totalProtein.textContent = (parseFloat(totalProtein.textContent) + food.protein).toFixed(2);
+    totalCarbs.textContent = (parseFloat(totalCarbs.textContent) + food.carbs).toFixed(2);
+    totalFats.textContent = (parseFloat(totalFats.textContent) + food.fats).toFixed(2);
 }
 
 // ✅ Fetch and display user's stored food on page load
@@ -135,6 +136,8 @@ async function loadUserMacros(userId) {
         if (!response.ok) throw new Error(data.error || "Error fetching macros");
 
         let foodList = document.getElementById("foodEntries");
+
+        foodList.innerHTML = ""; // ✅ Clear previous entries
 
         data.forEach(food => {
             let foodItem = document.createElement("li");
