@@ -6,6 +6,19 @@
     <title>MacroBuddy PWA</title>
     <link rel="stylesheet" href="css/index.css" />
     <link rel="manifest" href="manifest.json" />
+    <!-- This script forces a reload if the page is loaded via the back/forward cache -->
+    <script>
+      // Using the pageshow event to detect when a page is loaded from cache.
+      window.addEventListener('pageshow', function (event) {
+        if (event.persisted) {
+          window.location.reload();
+        }
+      });
+      // Fallback using the deprecated performance.navigation API, if available.
+      if (performance.navigation && performance.navigation.type === performance.navigation.TYPE_BACK_FORWARD) {
+        window.location.reload();
+      }
+    </script>
   </head>
   <body>
     <div class="top-bar"></div>
