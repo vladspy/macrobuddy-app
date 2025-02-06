@@ -35,9 +35,10 @@ document.addEventListener("DOMContentLoaded", () => {
             if (response.ok) {
                 console.log("✅ Login successful!");
 
-                // ✅ Ensure userId is stored
+                // ✅ Ensure userId is stored correctly
                 if (data.userId) {
-                    localStorage.setItem("userId", data.userId); // Store userId
+                    localStorage.setItem("userId", data.userId.toString()); // Store userId as a string
+                    console.log("Stored userId:", data.userId);
                 } else {
                     console.error("❌ No userId returned in login response.");
                 }
@@ -88,7 +89,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 // ✅ Store session details including userId
                 if (data.userId) {
-                    localStorage.setItem("userId", data.userId);
+                    localStorage.setItem("userId", data.userId.toString());
+                    console.log("Stored userId after signup:", data.userId);
                 } else {
                     console.error("❌ No userId returned after signup.");
                 }

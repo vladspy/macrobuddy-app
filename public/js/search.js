@@ -3,7 +3,7 @@ const SERVER_IP = "http://51.124.187.58:3000"; // ✅ Your Azure server
 document.addEventListener("DOMContentLoaded", () => {
     const userId = localStorage.getItem("userId");
 
-    if (!userId) {
+    if (!userId || userId === "undefined" || userId === "null") {
         alert("❌ You need to log in first.");
         window.location.href = "login.html";
     } else {
