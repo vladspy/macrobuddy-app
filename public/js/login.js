@@ -1,8 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
     console.log("✅ login.js loaded successfully!");
 
-    const signinForm = document.getElementById("signinForm");
-    const signupForm = document.getElementById("signupForm");
+    const signinForm = document.getElementById('signinForm');
+    const signupForm = document.getElementById('signupForm');
 
     if (!signinForm || !signupForm) {
         console.error("❌ Form elements not found. Ensure IDs are correct in login.html.");
@@ -10,11 +10,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // ✅ Handle Sign In
-    signinForm.addEventListener("submit", async (event) => {
+    signinForm.addEventListener('submit', async (event) => {
         event.preventDefault();
 
-        const email = document.getElementById("signin-email").value;
-        const password = document.getElementById("signin-password").value;
+        const email = document.getElementById('signin-email').value;
+        const password = document.getElementById('signin-password').value;
 
         if (!email || !password) {
             alert("❌ Please fill out all fields.");
@@ -24,22 +24,27 @@ document.addEventListener("DOMContentLoaded", () => {
         try {
             console.log("🔍 Sending login request...");
 
-            const response = await fetch("/api/users/verifyUser", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                credentials: "include",
-                body: JSON.stringify({ email, password }),
+            const response = await fetch('/api/users/verifyUser', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({ email, password })
             });
 
             const data = await response.json();
             if (response.ok) {
                 console.log("✅ Login successful!");
-                
-                // ✅ Store session details
+
+                // ✅ Ensure userId is stored
+                if (data.userId) {
+                    localStorage.setItem("userId", data.userId); // Store userId
+                } else {
+                    console.error("❌ No userId returned in login response.");
+                }
+
                 localStorage.setItem("isLoggedIn", "true");
                 localStorage.setItem("authToken", data.token);
                 localStorage.setItem("email", email);
-                localStorage.setItem("userId", data.userId); // ✅ Store user ID
 
                 alert("✅ Login successful!");
                 window.location.href = "index.html";
@@ -53,13 +58,13 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // ✅ Handle Sign Up
-    signupForm.addEventListener("submit", async (event) => {
+    // ✅ Handle Sign Up (Ensure userId is stored after signing up)
+    signupForm.addEventListener('submit', async (event) => {
         event.preventDefault();
 
-        const username = document.getElementById("signup-username").value;
-        const email = document.getElementById("signup-email").value;
-        const password = document.getElementById("signup-password").value;
+        const username = document.getElementById('signup-username').value;
+        const email = document.getElementById('signup-email').value;
+        const password = document.getElementById('signup-password').value;
 
         if (!username || !email || !password) {
             alert("❌ Please fill out all fields.");
@@ -69,11 +74,11 @@ document.addEventListener("DOMContentLoaded", () => {
         try {
             console.log("🔍 Sending signup request...");
 
-            const response = await fetch("/api/users/addUser", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                credentials: "include",
-                body: JSON.stringify({ username, email, password }),
+            const response = await fetch('/api/users/addUser', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({ username, email, password }) // Ensure username is sent
             });
 
             const data = await response.json();
@@ -81,11 +86,16 @@ document.addEventListener("DOMContentLoaded", () => {
             if (response.ok) {
                 alert("✅ Account created successfully!");
 
-                // ✅ Store session details
+                // ✅ Store session details including userId
+                if (data.userId) {
+                    localStorage.setItem("userId", data.userId);
+                } else {
+                    console.error("❌ No userId returned after signup.");
+                }
+
                 localStorage.setItem("isLoggedIn", "true");
                 localStorage.setItem("email", email);
                 localStorage.setItem("username", username);
-                localStorage.setItem("userId", data.userId); // ✅ Store user ID
 
                 // ✅ Redirect to Profile Page instead of Index
                 window.location.href = "profile.html";

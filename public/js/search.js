@@ -1,20 +1,15 @@
 const SERVER_IP = "http://51.124.187.58:3000"; // ✅ Your Azure server
 
 document.addEventListener("DOMContentLoaded", () => {
-    let userId = localStorage.getItem("userId");
+    const userId = localStorage.getItem("userId");
 
-    // ✅ Ensure userId exists and is a valid number
-    if (!userId || isNaN(userId)) {
+    if (!userId) {
         alert("❌ You need to log in first.");
-        console.error("❌ Error: Invalid or missing userId. Redirecting to login...");
-        localStorage.removeItem("userId"); // Clear any invalid data
         window.location.href = "login.html";
-        return;
+    } else {
+        console.log("✅ Logged in as User ID:", userId);
+        loadUserMacros(userId); // ✅ Fetch stored macros when page loads
     }
-
-    userId = parseInt(userId, 10); // ✅ Convert to a proper number
-    console.log("✅ Retrieved userId:", userId);
-    loadUserMacros(userId); // ✅ Fetch stored macros when page loads
 });
 
 let debounceTimer;
