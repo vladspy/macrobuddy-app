@@ -33,7 +33,7 @@ const verifyUser = async (email, password) => {
 
     if (isValid) {
       const userId = rows[0].id;
-      // Use the property "userId" in both the JWT payload and the response.
+      // Use "userId" as the key in both the token payload and the returned object.
       const token = jwt.sign(
         { userId: userId, email: rows[0].email },
         SECRET_KEY,

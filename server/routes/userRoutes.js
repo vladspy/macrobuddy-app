@@ -1,5 +1,4 @@
 const express = require("express");
-
 const router = express.Router();
 
 const { addUser } = require("../db/addUser");
@@ -39,9 +38,15 @@ router.post('/verifyUser', async (req, res) => {
 
         if (result.success) {
             console.log("✅ User verified:", email);
-            req.session.user = { email };
+            req.session.user = { email, userId: result.userId };
             res.cookie('sessionID', req.sessionID, { httpOnly: true, secure: false, sameSite: "Strict" });
-            return res.status(200).json({ success: true, message: 'User verified successfully!', token: result.token });
+            // Now return the userId along with the token and success message.
+            return res.status(200).json({ 
+                success: true, 
+                message: 'User verified successfully!', 
+                token: result.token,
+                userId: result.userId 
+            });
         } else {
             console.log("❌ Invalid credentials for:", email);
             return res.status(401).json({ error: 'Invalid email or password.' });
