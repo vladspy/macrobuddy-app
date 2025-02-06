@@ -33,7 +33,7 @@ body {
 
 .calculator {
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
   margin-bottom: 15px;
 }
 
@@ -99,7 +99,7 @@ body {
   color: #a83c3c;
 }
 
-/* Floating add button */
+/* Floating add/search button */
 .add-btn {
   position: fixed;
   bottom: 80px;

@@ -30,7 +30,7 @@
   </script>
 </head>
 <body>
-  <!-- Top Bar (from index 2) -->
+  <!-- Top Bar -->
   <div class="top-bar">
     <span class="time">10:07</span>
     <span class="date">2/4/2025</span>
@@ -38,21 +38,25 @@
 
   <!-- Main Content Area using the tracker container layout -->
   <div class="tracker-container">
-    <!-- MacroBuddy Section (from index 1) -->
+    <!-- MacroBuddy Section (modified: only Logout remains) -->
     <div id="bmr-calculator" class="wrapper">
       <div class="calculator">
-        <button type="button" class="exit-btn" onclick="window.location.href='profile.html'">Profile</button>
-        <button type="button" class="exit-btn" onclick="window.location.href='search.html'">Search</button>
         <button type="button" id="logout-btn" class="exit-btn">Logout</button>
       </div>
       <div class="results">
-        <div id="calc-target-gain">To Gain Weight:<br><span>2700 calories</span></div>
-        <div id="calc-target-maintain">To Maintain:<br><span>2400 calories</span></div>
-        <div id="calc-target-lose">To Lose Weight:<br><span>1900 calories</span></div>
+        <div id="calc-target-gain">
+          To Gain Weight:<br><span>2700 calories</span>
+        </div>
+        <div id="calc-target-maintain">
+          To Maintain:<br><span>2400 calories</span>
+        </div>
+        <div id="calc-target-lose">
+          To Lose Weight:<br><span>1900 calories</span>
+        </div>
       </div>
     </div>
 
-    <!-- Nutrition Tracker Progress Bars (from index 2) -->
+    <!-- Nutrition Tracker Progress Bars -->
     <div class="progress-bar">
       <p>Energy <span id="energy">0 / 3434 kcal</span></p>
       <div class="bar"></div>
@@ -71,15 +75,15 @@
     </div>
   </div>
 
-  <!-- Bottom Navigation (from index 2) -->
+  <!-- Bottom Navigation (modified: second button is Profile) -->
   <div class="bottom-nav">
     <button class="nav-btn active" onclick="changeTab(event, 'Tracking')">Tracking</button>
-    <button class="nav-btn" onclick="changeTab(event, 'Custom Food')">Custom Food</button>
+    <button class="nav-btn" onclick="window.location.href='profile.html'">Profile</button>
     <button class="nav-btn" onclick="changeTab(event, 'Settings')">Settings</button>
   </div>
 
-  <!-- Floating Add Button (from index 2) -->
-  <button class="add-btn" onclick="addFood()">+</button>
+  <!-- Floating Button: Circle with a Cross (×) that redirects to search -->
+  <button class="add-btn" onclick="window.location.href='search.html'">×</button>
 
   <!-- Script for Nutrition Tracker functionality -->
   <script src="js/index.js"></script>
