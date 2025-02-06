@@ -4,17 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MacroBuddy PWA</title>
-  <!-- Using renamed CSS file -->
   <link rel="stylesheet" href="css/index.css" />
   <link rel="manifest" href="manifest.json" />
 
-  <!-- Scripts for MacroBuddy functionality -->
   <script src="js/index.js" defer></script>
   <script src="js/logout.js" defer></script>
 
   <script>
     document.addEventListener("DOMContentLoaded", async () => {
-      // Check if the user is logged in
       try {
         const response = await fetch("/api/users/isLoggedIn", {
           method: "GET",
@@ -22,30 +19,30 @@
         });
         const data = await response.json();
         if (!data.loggedIn) {
-          window.location.href = "login.html"; // Redirect to login if not logged in
+          window.location.href = "login.html";
         }
       } catch (error) {
         console.error("❌ Error checking login:", error);
       }
 
-      // Retrieve the food data stored by the search page
+      // Retrieve the stored food data from localStorage
       const storedData = localStorage.getItem('foodData');
       if (storedData) {
         const foodData = JSON.parse(storedData);
 
-        // Update the progress bars (using search page values)
+        // Update progress bar text values
         document.getElementById('energy').textContent = `${foodData.calories} / 3434 kcal`;
         document.getElementById('protein').textContent = `${foodData.protein} / 172 g`;
         document.getElementById('carbs').textContent = `${foodData.carbs} / 429 g`;
         document.getElementById('fat').textContent = `${foodData.fats} / 115 g`;
 
-        // Populate the food table with dynamic rows matching the search page
+        // Populate the food table
         const tbody = document.querySelector('.food-table tbody');
-        tbody.innerHTML = ""; // Clear any existing rows
+        tbody.innerHTML = "";
         foodData.foodItems.forEach(item => {
           const row = document.createElement("tr");
           row.innerHTML = `
-            <td>${item.time}</td>
+            <td>${item.time || '-'}</td>
             <td>${item.food}</td>
             <td>${item.calories}</td>
             <td>${item.protein}</td>
@@ -59,12 +56,9 @@
   </script>
 </head>
 <body>
-  <!-- Top Bar (empty as requested) -->
   <div class="top-bar"></div>
-
-  <!-- Main Content Area using the tracker container layout -->
+  
   <div class="tracker-container">
-    <!-- Nutrition Tracker Progress Bars -->
     <div class="progress-bar">
       <p>Energy <span id="energy">0 / 3434 kcal</span></p>
       <div class="bar"></div>
@@ -82,7 +76,6 @@
       <div class="bar"></div>
     </div>
 
-    <!-- Table for Food Eaten Today -->
     <table class="food-table">
       <thead>
         <tr>
@@ -95,19 +88,16 @@
         </tr>
       </thead>
       <tbody>
-        <!-- Dynamic rows will be added here based on the stored data -->
       </tbody>
     </table>
   </div>
 
-  <!-- Bottom Navigation with three buttons -->
   <div class="bottom-nav">
     <button class="nav-btn active" onclick="changeTab(event, 'Tracking')">Tracking</button>
     <button class="nav-btn" onclick="window.location.href='nutritionPage.html'">Nutrition</button>
     <button class="nav-btn" id="logout-btn">Logout</button>
   </div>
 
-  <!-- Floating Button: Circle with a Plus (+) to redirect to search -->
   <button class="add-btn" onclick="window.location.href='search.html'">+</button>
 </body>
 </html>
