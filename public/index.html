@@ -9,6 +9,7 @@
   </head>
   <body>
     <div class="top-bar"></div>
+
     <div class="tracker-container">
       <div class="progress-bar">
         <p>Energy <span id="energy">0 / 3434 kcal</span></p>
@@ -26,6 +27,7 @@
         <p>Fat <span id="fat">0 / 115 g</span></p>
         <div class="bar"></div>
       </div>
+
       <table class="food-table">
         <thead>
           <tr>
@@ -40,13 +42,15 @@
         <tbody></tbody>
       </table>
     </div>
+
     <div class="bottom-nav">
       <button class="nav-btn active" onclick="changeTab(event, 'Tracking')">Tracking</button>
-      <button class="nav-btn" onclick="window.location.href='nutritionPage.html'">Settings</button>
+      <button class="nav-btn" onclick="window.location.href='nutritionPage.html'">Nutrition</button>
       <button class="nav-btn" id="logout-btn">Logout</button>
     </div>
+
     <button class="add-btn" onclick="window.location.href='search.html'">+</button>
-    
+
     <!-- External scripts -->
     <script src="js/dashboard.js" defer></script>
     <script src="js/index.js" defer></script>

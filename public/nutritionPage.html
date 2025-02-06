@@ -1,42 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nutrition Calculator</title>
-    <link rel="stylesheet" href="css/nutritionPage.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nutrition Calculator</title>
+  <link rel="stylesheet" href="css/nutritionPage.css">
 </head>
 <body>
-    <div class="container">
-        <h2>Your Personal Nutrition Needs</h2>
-        <label>Age</label>
-        <input type="number" value="18" min="1">
-        
-        <label>Sex</label>
-        <select>
-            <option>Male</option>
-            <option>Female</option>
-        </select>
-        
-        <label>Weight (kg)</label>
-        <input type="number" value="83" min="1">
-        
-        <label>Body Height (cm)</label>
-        <input type="number" value="186" min="1">
-        
-        <label>Activity Level (PAL)</label>
-        <input type="range" min="1" max="5" value="4" class="slider">
-        <p>You do workout hard regularly</p>
-        
-        <label>Weight Target</label>
-        <select>
-            <option>Maintaining</option>
-            <option>Gaining</option>
-            <option>Losing</option>
-        </select>
-        
-        <button class="button" onclick="window.location.href='index.html'" >Calculate Nutrition Targets</button>
-    </div>
-    <script src="nutritionPage.js"></script>
+  <div class="container">
+    <h2>Your Personal Nutrition Needs</h2>
+
+    <label>Age</label>
+    <input type="number" id="pi-age" value="18" min="1">
+
+    <label>Sex</label>
+    <select id="pi-sex">
+      <option value="Male">Male</option>
+      <option value="Female">Female</option>
+    </select>
+
+    <label>Weight (kg)</label>
+    <input type="number" id="pi-weight" value="83" min="1">
+
+    <label>Body Height (cm)</label>
+    <input type="number" id="pi-height" value="186" min="1">
+
+    <label>First Name</label>
+    <input type="text" id="pi-firstName" value="John">
+
+    <label>Last Name</label>
+    <input type="text" id="pi-lastName" value="Doe">
+
+    <label>Activity Level (PAL)</label>
+    <input type="range" min="1" max="5" value="4" class="slider" id="pi-activity">
+    <p id="activity-description">You do workout hard regularly</p>
+
+    <label>Weight Target</label>
+    <select id="pi-target">
+      <option value="maintaining">Maintaining</option>
+      <option value="gaining">Gaining</option>
+      <option value="losing">Losing</option>
+    </select>
+
+    <button class="button" id="calculate-btn">
+      Calculate Nutrition Targets
+    </button>
+  </div>
+
+  <script src="nutritionPage.js"></script>
 </body>
 </html>

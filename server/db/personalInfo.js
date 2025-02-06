@@ -4,15 +4,15 @@ const { connectDB } = require('./db');
 
 /**
  * Insert personal information for a user.
- * 
- * @param {object} data 
- * @param {number} data.userId 
- * @param {number|null} data.sex 
- * @param {number} data.height 
- * @param {number} data.age 
- * @param {number} data.weight 
- * @param {string} data.firstName 
- * @param {string} data.lastName 
+ *
+ * @param {object} data
+ * @param {number} data.userId
+ * @param {number|null} data.sex
+ * @param {number} data.height
+ * @param {number} data.age
+ * @param {number} data.weight
+ * @param {string} data.firstName
+ * @param {string} data.lastName
  * @returns {Promise<{success: boolean, insertId?: number, error?: string}>}
  */
 async function insertPersonalInfo({
@@ -78,8 +78,8 @@ async function insertPersonalInfo({
 
 /**
  * Retrieve personal information for a user.
- * 
- * @param {number} userId 
+ *
+ * @param {number} userId
  * @returns {Promise<{ success: boolean, data?: object, error?: string }>}
  */
 async function getPersonalInfo(userId) {
@@ -91,10 +91,10 @@ async function getPersonalInfo(userId) {
 
     connection = await connectDB();
 
-    // Fetch the MOST RECENT personal info for that user (if you want just one record)
+    // Fetch the MOST RECENT personal info for that user
     const sql = `
-      SELECT * 
-      FROM personalinformation 
+      SELECT *
+      FROM personalinformation
       WHERE user_id = ?
       ORDER BY PI_id DESC
       LIMIT 1
