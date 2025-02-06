@@ -56,23 +56,9 @@ form.addEventListener('submit', async function(event) {
       return;
     }
 
-    // 2) If successful, populate the display section
-    document.getElementById('displayFirstName').textContent = firstName;
-    document.getElementById('displayLastName').textContent = lastName;
-    document.getElementById('displayAge').textContent = age;
-    document.getElementById('displayHeight').textContent = height;
-    document.getElementById('displayWeight').textContent = weight;
-    document.getElementById('displayGender').textContent = genderValue;
-
-    // 3) Show the profile display and hide the form
-    form.style.display = 'none';
-    profileDisplay.style.display = 'block';
-
-    // Optionally alert or navigate away:
+    // 2) Redirect user to login.html after a successful insert
     alert("Personal info saved successfully!");
-
-    // If you want to redirect automatically, uncomment:
-    // window.location.href = "index.html";
+    window.location.href = "login.html";
 
   } catch (error) {
     console.error("Fetch error:", error);
