@@ -1,125 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MacroBuddy PWA</title>
-  <link rel="stylesheet" href="css/index.css" />
-  <link rel="manifest" href="manifest.json" />
-  <script>
-    const SERVER_IP = "http://51.124.187.58:3000"; // Same server as in search.js
-
-    // Load macros for the dashboard from the server
-    async function loadDashboardMacros() {
-      const userId = localStorage.getItem("userId");
-      if (!userId) {
-        window.location.href = "login.html";
-        return;
-      }
-      try {
-        const response = await fetch(`${SERVER_IP}/api/macros/getMacros?userId=${userId}`);
-        const data = await response.json();
-        if (!response.ok) throw new Error(data.error || "Error fetching macros");
-        
-        // Calculate totals
-        const totals = { calories: 0, protein: 0, carbs: 0, fats: 0 };
-        data.forEach(food => {
-          totals.calories += parseFloat(food.calories);
-          totals.protein += parseFloat(food.protein);
-          totals.carbs += parseFloat(food.carbs);
-          totals.fats += parseFloat(food.fats);
-        });
-        // Update progress bar text values
-        document.getElementById('energy').textContent = `${totals.calories.toFixed(2)} / 3434 kcal`;
-        document.getElementById('protein').textContent = `${totals.protein.toFixed(2)} / 172 g`;
-        document.getElementById('carbs').textContent = `${totals.carbs.toFixed(2)} / 429 g`;
-        document.getElementById('fat').textContent = `${totals.fats.toFixed(2)} / 115 g`;
-        
-        // Populate the food table
-        const tbody = document.querySelector('.food-table tbody');
-        tbody.innerHTML = "";
-        data.forEach(food => {
-          const row = document.createElement("tr");
-          row.innerHTML = `
-            <td>${food.time || '-'}</td>
-            <td>${food.food_name}</td>
-            <td>${parseFloat(food.calories).toFixed(2)}</td>
-            <td>${parseFloat(food.protein).toFixed(2)}</td>
-            <td>${parseFloat(food.carbs).toFixed(2)}</td>
-            <td>${parseFloat(food.fats).toFixed(2)}</td>
-          `;
-          tbody.appendChild(row);
-        });
-      } catch (error) {
-        console.error("❌ Error loading dashboard macros:", error);
-      }
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MacroBuddy PWA</title>
+    <link rel="stylesheet" href="css/index.css" />
+    <link rel="manifest" href="manifest.json" />
+  </head>
+  <body>
+    <div class="top-bar"></div>
+    <div class="tracker-container">
+      <div class="progress-bar">
+        <p>Energy <span id="energy">0 / 3434 kcal</span></p>
+        <div class="bar"></div>
+      </div>
+      <div class="progress-bar">
+        <p>Protein <span id="protein">0 / 172 g</span></p>
+        <div class="bar"></div>
+      </div>
+      <div class="progress-bar">
+        <p>Carbs <span id="carbs">0 / 429 g</span></p>
+        <div class="bar"></div>
+      </div>
+      <div class="progress-bar">
+        <p>Fat <span id="fat">0 / 115 g</span></p>
+        <div class="bar"></div>
+      </div>
+      <table class="food-table">
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>Food</th>
+            <th>Calories</th>
+            <th>Protein</th>
+            <th>Carbs</th>
+            <th>Fat</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div class="bottom-nav">
+      <button class="nav-btn active" onclick="changeTab(event, 'Tracking')">Tracking</button>
+      <button class="nav-btn" onclick="window.location.href='nutritionPage.html'">Nutrition</button>
+      <button class="nav-btn" id="logout-btn">Logout</button>
+    </div>
+    <button class="add-btn" onclick="window.location.href='search.html'">+</button>
     
-    document.addEventListener("DOMContentLoaded", async () => {
-      // Check if the user is logged in via your server endpoint
-      try {
-        const response = await fetch("/api/users/isLoggedIn", {
-          method: "GET",
-          credentials: "include",
-        });
-        const data = await response.json();
-        if (!data.loggedIn) {
-          window.location.href = "login.html";
-        }
-      } catch (error) {
-        console.error("❌ Error checking login:", error);
-      }
-      
-      // Load macros and update dashboard
-      loadDashboardMacros();
-    });
-  </script>
-</head>
-<body>
-  <div class="top-bar"></div>
-  <div class="tracker-container">
-    <div class="progress-bar">
-      <p>Energy <span id="energy">0 / 3434 kcal</span></p>
-      <div class="bar"></div>
-    </div>
-    <div class="progress-bar">
-      <p>Protein <span id="protein">0 / 172 g</span></p>
-      <div class="bar"></div>
-    </div>
-    <div class="progress-bar">
-      <p>Carbs <span id="carbs">0 / 429 g</span></p>
-      <div class="bar"></div>
-    </div>
-    <div class="progress-bar">
-      <p>Fat <span id="fat">0 / 115 g</span></p>
-      <div class="bar"></div>
-    </div>
-  
-    <table class="food-table">
-      <thead>
-        <tr>
-          <th>Time</th>
-          <th>Food</th>
-          <th>Calories</th>
-          <th>Protein</th>
-          <th>Carbs</th>
-          <th>Fat</th>
-        </tr>
-      </thead>
-      <tbody>
-      </tbody>
-    </table>
-  </div>
-  
-  <div class="bottom-nav">
-    <button class="nav-btn active" onclick="changeTab(event, 'Tracking')">Tracking</button>
-    <button class="nav-btn" onclick="window.location.href='nutritionPage.html'">Nutrition</button>
-    <button class="nav-btn" id="logout-btn">Logout</button>
-  </div>
-  
-  <button class="add-btn" onclick="window.location.href='search.html'">+</button>
-  
-  <script src="js/index.js" defer></script>
-  <script src="js/logout.js" defer></script>
-</body>
+    <!-- External scripts -->
+    <script src="js/dashboard.js" defer></script>
+    <script src="js/index.js" defer></script>
+    <script src="js/logout.js" defer></script>
+  </body>
 </html>
