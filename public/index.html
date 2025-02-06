@@ -38,21 +38,6 @@
 
   <!-- Main Content Area using the tracker container layout -->
   <div class="tracker-container">
-    <!-- MacroBuddy Results Section (no top buttons now) -->
-    <div id="bmr-calculator" class="wrapper">
-      <div class="results">
-        <div id="calc-target-gain">
-          To Gain Weight:<br><span>2700 calories</span>
-        </div>
-        <div id="calc-target-maintain">
-          To Maintain:<br><span>2400 calories</span>
-        </div>
-        <div id="calc-target-lose">
-          To Lose Weight:<br><span>1900 calories</span>
-        </div>
-      </div>
-    </div>
-
     <!-- Nutrition Tracker Progress Bars -->
     <div class="progress-bar">
       <p>Energy <span id="energy">0 / 3434 kcal</span></p>
@@ -70,16 +55,39 @@
       <p>Fat <span id="fat">0 / 115 g</span></p>
       <div class="bar"></div>
     </div>
+
+    <!-- Table for Food Eaten Today -->
+    <table class="food-table">
+      <thead>
+        <tr>
+          <th>Time</th>
+          <th>Food</th>
+          <th>Calories</th>
+          <th>Protein</th>
+          <th>Carbs</th>
+          <th>Fat</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Example row; you can remove or dynamically generate rows as needed -->
+        <tr>
+          <td>08:00</td>
+          <td>Oatmeal</td>
+          <td>150</td>
+          <td>5g</td>
+          <td>27g</td>
+          <td>3g</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 
-  <!-- Bottom Navigation -->
+  <!-- Bottom Navigation with four buttons -->
   <div class="bottom-nav">
     <button class="nav-btn active" onclick="changeTab(event, 'Tracking')">Tracking</button>
     <button class="nav-btn" onclick="window.location.href='nutritionPage.html'">Nutrition</button>
+    <button class="nav-btn" onclick="window.location.href='search.html'">Search</button>
     <button class="nav-btn" id="logout-btn">Logout</button>
   </div>
-
-  <!-- Script for additional functionality -->
-  <script src="js/index.js"></script>
 </body>
 </html>
