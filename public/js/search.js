@@ -1,14 +1,20 @@
 const SERVER_IP = "http://51.124.187.58:3000"; // ✅ Your Azure server
 
 document.addEventListener("DOMContentLoaded", () => {
-    const userId = localStorage.getItem("userId");
+    let userId = localStorage.getItem("userId");
 
-    if (!userId) {
+    // ✅ Ensure userId exists and is a valid number
+    if (!userId || isNaN(userId)) {
         alert("❌ You need to log in first.");
+        console.error("❌ Error: Invalid or missing userId. Redirecting to login...");
+        localStorage.removeItem("userId"); // Clear any invalid data
         window.location.href = "login.html";
-    } else {
-        loadUserMacros(userId); // ✅ Fetch stored macros when page loads
+        return;
     }
+
+    userId = parseInt(userId, 10); // ✅ Convert to a proper number
+    console.log("✅ Retrieved userId:", userId);
+    loadUserMacros(userId); // ✅ Fetch stored macros when page loads
 });
 
 let debounceTimer;
@@ -76,12 +82,17 @@ function displayFoodResults(foods) {
 
 // ✅ Add selected food to the list and database
 async function addFoodToList(food) {
-    let userId = localStorage.getItem("userId"); // ✅ Dynamically get userId
-    if (!userId) {
-        console.error("❌ No user ID found. Ensure user is logged in.");
-        alert("❌ Error: No user ID found. Please log in again.");
+    let userId = localStorage.getItem("userId");
+
+    if (!userId || isNaN(userId)) {
+        console.error("❌ No valid user ID found. Ensure user is logged in.");
+        alert("❌ Error: No valid user ID found. Please log in again.");
+        localStorage.removeItem("userId"); // Clear any invalid data
+        window.location.href = "login.html";
         return;
     }
+
+    userId = parseInt(userId, 10); // ✅ Ensure userId is a number
 
     let foodList = document.getElementById("foodEntries");
 
@@ -96,7 +107,7 @@ async function addFoodToList(food) {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                userId: parseInt(userId), // ✅ Ensure userId is sent as a number
+                userId,
                 food_name: food.product_name,
                 protein: food.protein,
                 carbs: food.carbs,
@@ -136,7 +147,6 @@ async function loadUserMacros(userId) {
         if (!response.ok) throw new Error(data.error || "Error fetching macros");
 
         let foodList = document.getElementById("foodEntries");
-
         foodList.innerHTML = ""; // ✅ Clear previous entries
 
         data.forEach(food => {
