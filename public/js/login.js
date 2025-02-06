@@ -5,9 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const signupForm = document.getElementById("signupForm");
   
     if (!signinForm || !signupForm) {
-      console.error(
-        "❌ Form elements not found. Ensure IDs are correct in login.html."
-      );
+      console.error("❌ Form elements not found. Ensure IDs are correct in login.html.");
       return;
     }
   
@@ -22,7 +20,8 @@ document.addEventListener("DOMContentLoaded", () => {
           localStorage.setItem("isLoggedIn", "true");
           localStorage.setItem("userId", data.userId);
           console.log("✅ User is already logged in:", data.userId);
-          window.location.href = "index.html"; // Redirect if logged in
+          // Redirect to index.js if already logged in.
+          window.location.href = "/index.js";
         }
       });
   
@@ -78,15 +77,11 @@ document.addEventListener("DOMContentLoaded", () => {
           localStorage.setItem("email", email);
   
           alert("✅ Login successful!");
-          window.location.href = "profile.html"; // Redirect to profile
+          // Redirect to index.js for a successful login.
+          window.location.href = "/index.js";
         } else {
-          console.error(
-            "❌ Login failed:",
-            data.error || "An unknown error occurred."
-          );
-          alert(
-            "❌ Login failed: " + (data.error || "An unknown error occurred.")
-          );
+          console.error("❌ Login failed:", data.error || "An unknown error occurred.");
+          alert("❌ Login failed: " + (data.error || "An unknown error occurred."));
         }
       } catch (error) {
         console.error("❌ Error logging in:", error);
@@ -98,13 +93,12 @@ document.addEventListener("DOMContentLoaded", () => {
     signupForm.addEventListener("submit", async (event) => {
       event.preventDefault();
   
-      const firstName = document.getElementById("signup-firstname").value;
-      const lastName = document.getElementById("signup-lastname").value;
+      const username = document.getElementById("signup-username").value;
       const email = document.getElementById("signup-email").value;
       const password = document.getElementById("signup-password").value;
   
-      if (!firstName || !lastName || !email || !password) {
-        alert("❌ Please fill out all fields.");
+      if (!username || !email || !password) {
+        alert("❌ Please fill out all required fields.");
         return;
       }
   
@@ -114,7 +108,7 @@ document.addEventListener("DOMContentLoaded", () => {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           credentials: "include",
-          body: JSON.stringify({ firstName, lastName, email, password })
+          body: JSON.stringify({ username, email, password })
         });
   
         const data = await response.json();
@@ -128,7 +122,8 @@ document.addEventListener("DOMContentLoaded", () => {
           localStorage.setItem("isLoggedIn", "true");
           localStorage.setItem("email", email);
   
-          window.location.href = "profile.html"; // Redirect to profile
+          // Redirect for sign up might remain different if desired.
+          window.location.href = "/profile.html";
         } else {
           alert("❌ Signup failed: " + (data.error || "An unknown error occurred."));
         }
