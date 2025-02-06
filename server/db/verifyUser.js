@@ -17,9 +17,10 @@ const verifyUser = async (email, password) => {
   try {
     console.log("🔍 Login attempt:", email);
 
+    // Adjusted query to select the proper field (user_id)
     const connection = await connectDB();
     const [rows] = await connection.execute(
-      "SELECT * FROM user WHERE email = ?",
+      "SELECT user_id, email, hashed_password FROM user WHERE email = ?",
       [email]
     );
 
@@ -32,8 +33,13 @@ const verifyUser = async (email, password) => {
     const isValid = await verifyPassword(storedHash, password);
 
     if (isValid) {
-      const userId = rows[0].id;
-      // Use "userId" as the key in both the token payload and the returned object.
+      // Use the correct column name: user_id
+      const userId = rows[0].user_id;
+      if (!userId) {
+        console.error("❌ User ID not found in the database row.");
+        return { success: false, error: "Internal server error" };
+      }
+      // Include userId in the JWT payload
       const token = jwt.sign(
         { userId: userId, email: rows[0].email },
         SECRET_KEY,

@@ -40,7 +40,7 @@ router.post('/verifyUser', async (req, res) => {
             console.log("✅ User verified:", email);
             req.session.user = { email, userId: result.userId };
             res.cookie('sessionID', req.sessionID, { httpOnly: true, secure: false, sameSite: "Strict" });
-            // Now return the userId along with the token and success message.
+            // Return userId along with the token
             return res.status(200).json({ 
                 success: true, 
                 message: 'User verified successfully!', 
