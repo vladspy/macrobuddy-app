@@ -34,9 +34,9 @@ function computeTargetsFromPersonalInfo(piData) {
 
   // NEW: Apply the user's goal from the DB
   // E.g. "gaining" => +500, "losing" => -500, "maintaining" => do nothing
-  if (goal === "gaining") {
+  if (goal === "gain") {
     tdee += 500;
-  } else if (goal === "losing") {
+  } else if (goal === "lose") {
     tdee -= 500;
   }
   // else if (goal === "maintaining" or undefined), do nothing
