@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
           localStorage.setItem("isLoggedIn", "true");
           localStorage.setItem("userId", data.userId);
           console.log("✅ User is already logged in:", data.userId);
-          window.location.href = "/public/profile.html"; // Redirect if logged in
+          window.location.href = "index.html"; // Redirect if logged in
         }
       });
   
@@ -78,7 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
           localStorage.setItem("email", email);
   
           alert("✅ Login successful!");
-          window.location.href = "/public/profile.html"; // Redirect to profile
+          window.location.href = "profile.html"; // Redirect to profile
         } else {
           console.error(
             "❌ Login failed:",
