@@ -1,4 +1,4 @@
-/* Ensure body is a flex container to center content */
+/* Center everything */
 body {
   background-color: #1e1b1b;
   color: #fff;
@@ -20,7 +20,7 @@ body {
   height: 100%;
 }
 
-/* Center the switch card */
+/* Switch (Container for Flip) */
 .card-switch {
   display: flex;
   justify-content: center;
@@ -28,10 +28,15 @@ body {
   width: 340px;
 }
 
+/* Hidden checkbox (acts as a switch) */
+.toggle {
+  display: none;
+}
+
 /* Flip Card */
 .flip-card__inner {
-  width: 320px; /* Slightly larger */
-  height: 350px; /* Adjusted height */
+  width: 320px;
+  height: 350px;
   position: relative;
   perspective: 1000px;
   text-align: center;
@@ -39,43 +44,12 @@ body {
   transform-style: preserve-3d;
 }
 
-/* Fix the switch card alignment */
-.switch {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: auto;
-  gap: 20px; /* Reduce the gap */
-  transform: translateY(0); /* No need to shift up */
+/* Apply rotation when checkbox is checked */
+.toggle:checked + .flip-card__inner {
+  transform: rotateY(180deg);
 }
 
-/* Center login and signup labels */
-.card-side::before {
-  position: absolute;
-  content: 'Log in';
-  left: 50%;
-  transform: translateX(-50%);
-  top: -40px;
-  text-decoration: underline;
-  color: #fff;
-  font-weight: 600;
-}
-
-.card-side::after {
-  position: absolute;
-  content: 'Sign up';
-  left: 50%;
-  transform: translateX(-50%);
-  top: -20px;
-  text-decoration: none;
-  color: #fff;
-  font-weight: 600;
-}
-
-/* Flip Card Styling */
+/* Front & Back styles */
 .flip-card__front, .flip-card__back {
   padding: 20px;
   position: absolute;
@@ -98,7 +72,30 @@ body {
   transform: rotateY(180deg);
 }
 
-/* Input fields - fixed alignment */
+/* Log in and sign up labels */
+.card-side::before {
+  position: absolute;
+  content: 'Log in';
+  left: 50%;
+  transform: translateX(-50%);
+  top: -40px;
+  text-decoration: underline;
+  color: #fff;
+  font-weight: 600;
+}
+
+.card-side::after {
+  position: absolute;
+  content: 'Sign up';
+  left: 50%;
+  transform: translateX(-50%);
+  top: -20px;
+  text-decoration: none;
+  color: #fff;
+  font-weight: 600;
+}
+
+/* Inputs */
 .flip-card__input {
   width: 260px;
   height: 40px;
@@ -129,12 +126,7 @@ body {
   cursor: pointer;
 }
 
-/* Fix floating checkbox */
-.toggle {
-  display: none; /* Hide the checkbox */
-}
-
-/* Adjust the tap-to-sign-in label */
+/* Tap-to-sign-in label */
 .tap-label {
   position: absolute;
   bottom: 10px;
