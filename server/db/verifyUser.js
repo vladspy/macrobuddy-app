@@ -29,7 +29,7 @@ const verifyUser = async (email, password) => {
         const isValid = await verifyPassword(storedHash, password);
 
         if (isValid) {
-            const userId = rows[0].id; // ✅ Get User ID from DB
+            const userId = rows[0].id; // ✅ Fetch userId from database
             const token = jwt.sign(
                 { id: userId, email: rows[0].email },
                 SECRET_KEY,
@@ -37,7 +37,7 @@ const verifyUser = async (email, password) => {
             );
 
             console.log("✅ User verified successfully:", email);
-            return { success: true, message: "User verified successfully!", token, userId };
+            return { success: true, message: "User verified successfully!", token, userId };  // ✅ Return `userId`
         } else {
             console.log("❌ Invalid credentials for:", email);
             return { success: false, error: "Invalid email or password." };
@@ -47,6 +47,7 @@ const verifyUser = async (email, password) => {
         return { success: false, error: "Internal server error" };
     }
 };
+
 
 
 
