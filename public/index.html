@@ -1,49 +1,87 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>MacroBuddy PWA</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MacroBuddy PWA</title>
+  <!-- Using renamed CSS file -->
+  <link rel="stylesheet" href="index.css" />
+  <link rel="manifest" href="manifest.json" />
 
-    <link rel="stylesheet" href="css/design.css">
-    <link rel="manifest" href="manifest.json">
+  <!-- Scripts for MacroBuddy functionality -->
+  <script src="js/index.js" defer></script>
+  <script src="js/logout.js" defer></script>
 
-    <script src="js/index.js" defer></script>
-    <script src="js/logout.js" defer></script> <!-- ✅ Load logout.js separately -->
-
-    <script>
-        document.addEventListener("DOMContentLoaded", async () => {
-            try {
-                const response = await fetch("/api/users/isLoggedIn", {
-                    method: "GET",
-                    credentials: "include",
-                });
-
-                const data = await response.json();
-
-                if (!data.loggedIn) {
-                    window.location.href = "login.html"; // Redirect to login if not logged in
-                }
-            } catch (error) {
-                console.error("❌ Error checking login:", error);
-            }
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      try {
+        const response = await fetch("/api/users/isLoggedIn", {
+          method: "GET",
+          credentials: "include",
         });
-    </script>
+        const data = await response.json();
+        if (!data.loggedIn) {
+          window.location.href = "login.html"; // Redirect to login if not logged in
+        }
+      } catch (error) {
+        console.error("❌ Error checking login:", error);
+      }
+    });
+  </script>
 </head>
-
 <body>
-    <div id="bmr-calculator" class="wrapper">
-        <div class="calculator">
-            <button type="button" class="exit-btn" onclick="window.location.href='profile.html'">Profile</button>
-            <button type="button" class="exit-btn" onclick="window.location.href='search.html'">Search</button>
-            <button type="button" id="logout-btn" class="exit-btn">Logout</button> <!-- ✅ Logout Button -->
-        </div>
+  <!-- Top Bar (from index 2) -->
+  <div class="top-bar">
+    <span class="time">10:07</span>
+    <span class="date">2/4/2025</span>
+  </div>
 
-        <div class="results">
-            <div id="calc-target-gain">To Gain Weight:<br><span>2700 calories</span></div>
-            <div id="calc-target-maintain">To Maintain:<br><span>2400 calories</span></div>
-            <div id="calc-target-lose">To Lose Weight:<br><span>1900 calories</span></div>
-        </div>
+  <!-- Main Content Area using the tracker container layout -->
+  <div class="tracker-container">
+    <!-- MacroBuddy Section (from index 1) -->
+    <div id="bmr-calculator" class="wrapper">
+      <div class="calculator">
+        <button type="button" class="exit-btn" onclick="window.location.href='profile.html'">Profile</button>
+        <button type="button" class="exit-btn" onclick="window.location.href='search.html'">Search</button>
+        <button type="button" id="logout-btn" class="exit-btn">Logout</button>
+      </div>
+      <div class="results">
+        <div id="calc-target-gain">To Gain Weight:<br><span>2700 calories</span></div>
+        <div id="calc-target-maintain">To Maintain:<br><span>2400 calories</span></div>
+        <div id="calc-target-lose">To Lose Weight:<br><span>1900 calories</span></div>
+      </div>
     </div>
+
+    <!-- Nutrition Tracker Progress Bars (from index 2) -->
+    <div class="progress-bar">
+      <p>Energy <span id="energy">0 / 3434 kcal</span></p>
+      <div class="bar"></div>
+    </div>
+    <div class="progress-bar">
+      <p>Protein <span id="protein">0 / 172 g</span></p>
+      <div class="bar"></div>
+    </div>
+    <div class="progress-bar">
+      <p>Carbs <span id="carbs">0 / 429 g</span></p>
+      <div class="bar"></div>
+    </div>
+    <div class="progress-bar">
+      <p>Fat <span id="fat">0 / 115 g</span></p>
+      <div class="bar"></div>
+    </div>
+  </div>
+
+  <!-- Bottom Navigation (from index 2) -->
+  <div class="bottom-nav">
+    <button class="nav-btn active" onclick="changeTab(event, 'Tracking')">Tracking</button>
+    <button class="nav-btn" onclick="changeTab(event, 'Custom Food')">Custom Food</button>
+    <button class="nav-btn" onclick="changeTab(event, 'Settings')">Settings</button>
+  </div>
+
+  <!-- Floating Add Button (from index 2) -->
+  <button class="add-btn" onclick="addFood()">+</button>
+
+  <!-- Script for Nutrition Tracker functionality -->
+  <script src="script.js"></script>
 </body>
 </html>
