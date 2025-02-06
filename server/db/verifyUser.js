@@ -33,7 +33,7 @@ const verifyUser = async (email, password) => {
 
     if (isValid) {
       const userId = rows[0].id;
-      // Update the token payload to use "userId" as the property name
+      // Use the property "userId" in both the JWT payload and the response.
       const token = jwt.sign(
         { userId: userId, email: rows[0].email },
         SECRET_KEY,
@@ -41,7 +41,6 @@ const verifyUser = async (email, password) => {
       );
 
       console.log("✅ User verified successfully:", email);
-      // Return the token and the userId property (which now matches the payload)
       return {
         success: true,
         message: "User verified successfully!",
