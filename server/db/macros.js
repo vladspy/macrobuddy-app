@@ -58,7 +58,7 @@ const deleteLastMacro = async (userId) => {
 
   // Get the last macro record for the user (assumes primary key column is named `id`)
   const [rows] = await connection.execute(
-    'SELECT * FROM macros WHERE user_id = ? ORDER BY id DESC LIMIT 1',
+    'SELECT * FROM macros WHERE user_id = ? ORDER BY macro_id DESC LIMIT 1',
     [userId]
   );
 
@@ -70,7 +70,7 @@ const deleteLastMacro = async (userId) => {
   const lastMacro = rows[0];
 
   await connection.execute(
-    'DELETE FROM macros WHERE id = ?',
+    'DELETE FROM macros WHERE macro_id = ?',
     [lastMacro.id]
   );
 
