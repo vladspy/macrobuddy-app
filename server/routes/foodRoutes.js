@@ -22,10 +22,11 @@ router.get("/search", async (req, res) => {
         // ✅ Request multiple results (pageSize = 10)
         const params = new URLSearchParams({
             query,
-            pageSize: 10,  
+            pageSize: 10,
             api_key: USDA_API_KEY
         });
 
+        // Filtering dataType to only get Survey (FNDDS) results
         params.set("dataType", "Survey (FNDDS)");
         let paramString = params.toString().replace(/\(/g, "%28").replace(/\)/g, "%29");
 
@@ -53,9 +54,11 @@ router.get("/search", async (req, res) => {
 });
 
 /**
- * Function to extract macronutrients from USDA API response
+ * Function to extract macronutrients from USDA API response.
+ * This function now checks for alternative nutrient names for calories.
  */
 function extractMacronutrients(foodItem) {
+    console.log("Food Nutrients:", foodItem.foodNutrients);
     const macronutrients = {
         calories: 0,
         protein: 0,
@@ -67,7 +70,10 @@ function extractMacronutrients(foodItem) {
 
     foodItem.foodNutrients.forEach(nutrient => {
         switch (nutrient.nutrientName) {
+            // Check for different possible names for calories
             case "Calories":
+            case "Energy":
+            case "Energy (kcal)":
                 macronutrients.calories = nutrient.value;
                 break;
             case "Protein":

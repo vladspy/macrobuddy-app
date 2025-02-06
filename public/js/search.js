@@ -65,7 +65,7 @@ function displayFoodResults(foods) {
         resultItem.classList.add("result-item");
         resultItem.innerHTML = `
             <strong>${food.product_name}</strong><br>
-            Calories: ${food.caloriesl} kcal, Protein: ${food.protein}g, Carbs: ${food.carbs}g, Fats: ${food.fats}g
+            Calories: ${food.calories} kcal, Protein: ${food.protein}g, Carbs: ${food.carbs}g, Fats: ${food.fats}g
             <button class="add-food-btn">➕ Add</button>
         `;
         resultItem.querySelector(".add-food-btn").addEventListener("click", () => addFoodToList(food));
