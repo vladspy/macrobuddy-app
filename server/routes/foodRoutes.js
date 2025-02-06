@@ -57,7 +57,7 @@ router.get("/search", async (req, res) => {
  */
 function extractMacronutrients(foodItem) {
     const macronutrients = {
-        energy_kcal: 0,
+        calories: 0,
         protein: 0,
         carbs: 0,
         fats: 0
@@ -67,8 +67,8 @@ function extractMacronutrients(foodItem) {
 
     foodItem.foodNutrients.forEach(nutrient => {
         switch (nutrient.nutrientName) {
-            case "Energy":
-                macronutrients.energy_kcal = nutrient.value;
+            case "Calories":
+                macronutrients.calories = nutrient.value;
                 break;
             case "Protein":
                 macronutrients.protein = nutrient.value;
