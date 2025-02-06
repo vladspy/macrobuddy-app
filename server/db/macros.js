@@ -38,7 +38,7 @@ const addMacro = async (userId, macros) => {
       throw new Error(`User with ID ${userId} does not exist`);
   }
 
-  // ✅ Ensure `food_name` is included in the INSERT statement
+  // Insert macro with the provided details
   const [insertResult] = await connection.execute(
       'INSERT INTO macros (user_id, food_name, protein, carbs, fats, calories) VALUES (?, ?, ?, ?, ?, ?)',
       [userId, macros.food_name, macros.protein, macros.carbs, macros.fats, macros.calories]
@@ -56,7 +56,7 @@ const addMacro = async (userId, macros) => {
 const deleteLastMacro = async (userId) => {
   const connection = await connectDB();
 
-  // Get the last macro record for the user (assumes primary key column is named `id`)
+  // Fetch the last macro record using the primary key `macro_id`
   const [rows] = await connection.execute(
     'SELECT * FROM macros WHERE user_id = ? ORDER BY macro_id DESC LIMIT 1',
     [userId]
@@ -69,9 +69,10 @@ const deleteLastMacro = async (userId) => {
 
   const lastMacro = rows[0];
 
+  // Delete the entry using macro_id
   await connection.execute(
     'DELETE FROM macros WHERE macro_id = ?',
-    [lastMacro.id]
+    [lastMacro.macro_id]
   );
 
   connection.release();

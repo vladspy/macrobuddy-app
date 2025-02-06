@@ -181,12 +181,13 @@ document.getElementById("deleteLast").addEventListener("click", async function (
         let response = await fetch(`${SERVER_IP}/api/macros/deleteLast?userId=${userId}`, {
             method: 'DELETE'
         });
-        if (!response.ok) throw new Error("Error deleting macro");
-
         let data = await response.json();
+        if (!response.ok) {
+            throw new Error(data.error || "Error deleting macro");
+        }
         console.log("✅ Deleted macro:", data.deletedMacro);
 
-        // ✅ Reset totals and reload macros to update the UI
+        // Reset totals and reload macros to update the UI
         document.getElementById("totalCalories").textContent = "0";
         document.getElementById("totalProtein").textContent = "0";
         document.getElementById("totalCarbs").textContent = "0";
@@ -194,6 +195,6 @@ document.getElementById("deleteLast").addEventListener("click", async function (
         loadUserMacros(userId);
     } catch (error) {
         console.error("❌ Error deleting last macro:", error);
-        alert("❌ Error deleting last macro");
+        alert("❌ " + error.message);
     }
 });
