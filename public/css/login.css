@@ -1,24 +1,42 @@
+/* Body & Wrapper to match dark theme from index */
+body {
+  background-color: #1e1b1b;
+  color: #fff;
+  margin: 0;
+  font-family: Arial, sans-serif;
+  height: 100vh;
+  overflow: hidden; /* Keep scroll from showing if not needed */
+  position: relative; /* So we can place .tap-label absolutely */
+}
+
+/* A label at the bottom right to prompt flipping back to sign in */
+.tap-label {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  color: #fff;
+  font-size: 14px;
+  opacity: 0.7;
+}
+
+/* Main container to center the flip card */
 .wrapper {
-  --input-focus: #2d8cf0;
-  --font-color: #323232;
-  --font-color-sub: #666;
-  --bg-color: #fff;
-  --bg-color-alt: #666;
-  --main-color: #323232;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  height: 100%;
 }
 
 /* switch card */
 .switch {
-  transform: translateY(-200px);
+  transform: translateY(-70px);
   position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 250px; /* Adjusted to fit new form height */
+  gap: 250px; /* Adjust if needed for your layout */
   width: 340px;
   height: 100px;
 }
@@ -27,10 +45,10 @@
   position: absolute;
   content: 'Log in';
   left: -70px;
-  top: 270px; /* Adjusted for better placement */
+  top: 270px; /* Adjust if needed */
   width: 340px;
   text-decoration: underline;
-  color: var(--font-color);
+  color: #fff;
   font-weight: 600;
 }
 
@@ -38,19 +56,18 @@
   position: absolute;
   content: 'Sign up';
   left: 70px;
-  top: 270px; /* Adjusted for better placement */
+  top: 270px; /* Adjust if needed */
   width: 340px;
   text-decoration: none;
-  color: var(--font-color);
+  color: #fff;
   font-weight: 600;
 }
 
 /* Card Flip Animation */
 .flip-card__inner {
   width: 300px;
-  height: 300px; /* Adjusted height for new form */
+  height: 300px; /* Adjusted height for the forms */
   position: relative;
-  background-color: transparent;
   perspective: 1000px;
   text-align: center;
   transition: transform 0.8s;
@@ -67,17 +84,19 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center; /* Center content horizontally */
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
-  background: lightgrey;
-  gap: 15px; /* Adjusted spacing */
+  background: #2b2929; /* match container color from index */
+  gap: 15px;
   border-radius: 5px;
-  border: 2px solid var(--main-color);
-  box-shadow: 4px 4px var(--main-color);
+  border: 2px solid #a83c3c; /* red accent color from index */
+  box-shadow: 4px 4px #a83c3c; /* accent shadow */
+  width: 100%;
+  height: 100%;
 }
 
 .flip-card__back {
-  width: 100%;
   transform: rotateY(180deg);
 }
 
@@ -86,41 +105,48 @@
   width: 250px;
   height: 40px;
   border-radius: 5px;
-  border: 2px solid var(--main-color);
-  background-color: var(--bg-color);
-  box-shadow: 4px 4px var(--main-color);
+  border: 2px solid #a83c3c;
+  background-color: #1e1b1b; /* A bit darker input background */
+  box-shadow: 4px 4px #a83c3c;
   font-size: 15px;
   font-weight: 600;
-  color: var(--font-color);
+  color: #fff;
   padding: 5px 10px;
   outline: none;
 }
 
 .flip-card__input::placeholder {
-  color: var(--font-color-sub);
+  color: #ccc;
   opacity: 0.8;
 }
 
 .flip-card__input:focus {
-  border: 2px solid var(--input-focus);
+  border: 2px solid #fff;
 }
 
-/* Confirm button */
+/* Confirm buttons */
 .flip-card__btn {
-  margin: 15px 0; /* Adjusted margin */
+  margin: 10px 0;
   width: 120px;
   height: 40px;
   border-radius: 5px;
-  border: 2px solid var(--main-color);
-  background-color: var(--bg-color);
-  box-shadow: 4px 4px var(--main-color);
+  border: 2px solid #a83c3c;
+  background-color: #1e1b1b;
+  box-shadow: 4px 4px #a83c3c;
   font-size: 17px;
   font-weight: 600;
-  color: var(--font-color);
+  color: #fff;
   cursor: pointer;
 }
 
 .flip-card__btn:active {
-  box-shadow: 0px 0px var(--main-color);
+  box-shadow: 0px 0px #a83c3c;
   transform: translate(3px, 3px);
+}
+
+/* Titles */
+.title {
+  font-size: 22px;
+  font-weight: bold;
+  color: #fff;
 }

@@ -27,7 +27,7 @@ body {
   overflow-y: auto;
   flex-grow: 1;
 
-  /* NEW: Make container positioned, so we can absolutely position the + button inside it */
+  /* Ensure the container is positioned so we can absolutely position the "+" button inside it */
   position: relative;
 }
 
@@ -139,9 +139,9 @@ body {
 
 /* Floating Add/Search Button */
 .add-btn {
-  /* CHANGED: remove 'position: fixed' and place it absolutely inside .tracker-container */
   position: absolute;
-  bottom: 20px;
+  /* Bump up so it’s not hidden behind bottom nav: */
+  bottom: 80px;
   right: 20px;
   background: #a83c3c;
   color: white;
