@@ -92,7 +92,7 @@ async function addFoodToList(food) {
     let foodList = document.getElementById("foodEntries");
 
     let foodItem = document.createElement("li");
-    foodItem.textContent = `${food.product_name} - ${food.energy_kcal} kcal`;
+    foodItem.textContent = `${food.product_name} - ${food.calories} kcal`;
     foodList.appendChild(foodItem);
 
     updateMacroTotals(food);
@@ -107,7 +107,7 @@ async function addFoodToList(food) {
                 protein: food.protein,
                 carbs: food.carbs,
                 fats: food.fats,
-                calories: food.energy_kcal
+                calories: food.calories
             })
         });
 
@@ -127,7 +127,7 @@ function updateMacroTotals(food) {
     let totalCarbs = document.getElementById("totalCarbs");
     let totalFats = document.getElementById("totalFats");
 
-    totalCalories.textContent = (parseFloat(totalCalories.textContent) + food.energy_kcal).toFixed(2);
+    totalCalories.textContent = (parseFloat(totalCalories.textContent) + food.calories).toFixed(2);
     totalProtein.textContent = (parseFloat(totalProtein.textContent) + food.protein).toFixed(2);
     totalCarbs.textContent = (parseFloat(totalCarbs.textContent) + food.carbs).toFixed(2);
     totalFats.textContent = (parseFloat(totalFats.textContent) + food.fats).toFixed(2);
