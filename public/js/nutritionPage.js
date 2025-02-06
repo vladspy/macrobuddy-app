@@ -17,6 +17,10 @@ function calculateNutrition() {
   const firstName = document.getElementById("pi-firstName").value;
   const lastName = document.getElementById("pi-lastName").value;
 
+  // NEW: Grab the Weight Target select
+  const target = document.getElementById("pi-target").value; 
+  // possible values: "maintaining", "gaining", "losing"
+
   // Convert sex to 0 or 1 for DB
   const sex = (sexSelect.toLowerCase() === "male") ? 1 : 0;
 
@@ -26,7 +30,7 @@ function calculateNutrition() {
     return;
   }
 
-  // We only have a POST route to "add" personal info, so we can just insert a new row each time.
+  // Construct the payload
   const payload = {
     userId: Number(userId),
     sex,
@@ -34,9 +38,13 @@ function calculateNutrition() {
     age,
     weight,
     firstName,
-    lastName
+    lastName,
+
+    // NEW: send target as 'goal' for the DB
+    goal: target // e.g. "maintaining", "gaining", or "losing"
   };
 
+  // POST request to add personal info (with goal)
   fetch(`${SERVER_IP}/api/personal-info/addPI`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -62,7 +70,6 @@ document.addEventListener("DOMContentLoaded", function() {
   // 1) On load, fetch existing personal info
   const userId = localStorage.getItem("userId");
   if (!userId) {
-    // Possibly redirect or alert
     console.warn("No user found in localStorage. Perhaps not logged in?");
     return;
   }
@@ -82,7 +89,13 @@ document.addEventListener("DOMContentLoaded", function() {
       document.getElementById("pi-height").value = data.height;
       document.getElementById("pi-firstName").value = data.first_name;
       document.getElementById("pi-lastName").value = data.last_name;
-      // We have no column for activity or target in the DB, so we can't fill them from the DB
+
+      // We have no column for activity in the DB, so we can't fill pi-activity from DB
+      // But we DO have 'goal' in the DB now, so pre-select it if available:
+      if (data.goal) {
+        // data.goal might be "maintaining", "gaining", or "losing"
+        document.getElementById("pi-target").value = data.goal;
+      }
     })
     .catch(err => console.error("Error fetching personal info:", err));
 
@@ -93,7 +106,6 @@ document.addEventListener("DOMContentLoaded", function() {
   const slider = document.getElementById("pi-activity");
   const activityDesc = document.getElementById("activity-description");
   slider.addEventListener("input", function() {
-    // Just an example of textual feedback
     const val = parseInt(slider.value, 10);
     let desc;
     switch (val) {

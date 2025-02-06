@@ -2,7 +2,6 @@
 
 const SERVER_IP = "http://51.124.187.58:3000"; // Same server as in search.js
 
-// We remove the static targets object and compute them dynamically
 // If for some reason personal info not found, fallback to these defaults
 let defaultTargets = {
   calories: 2500,
@@ -13,15 +12,13 @@ let defaultTargets = {
 
 /**
  * A small helper to compute BMR -> TDEE -> macros from personal info
- * Note: Adjust logic as you see fit for your application.
  */
 function computeTargetsFromPersonalInfo(piData) {
-  // piData object structure from DB: { user_id, sex, height, age, weight, ... }
+  // piData object from DB: { user_id, sex, height, age, weight, goal, ... }
   // sex => 0 (female), 1 (male)
-  // For demo, assume no detailed activity level from DB; we pick a minimal factor or something
-  const { sex, height, age, weight } = piData;
+  const { sex, height, age, weight, goal } = piData;
 
-  let gender = sex === 1 ? "male" : "female";
+  let gender = (sex === 1) ? "male" : "female";
 
   // BMR (Mifflin-St Jeor)
   let bmr;
@@ -31,29 +28,33 @@ function computeTargetsFromPersonalInfo(piData) {
     bmr = 447.593 + 9.247 * weight + 3.098 * height - 4.330 * age;
   }
 
-  // We don't have a user-chosen activity factor from DB, so pick something modest, e.g. 1.3:
+  // We don't have a user-chosen activity factor from DB, so pick 1.3:
   let activityFactor = 1.3;
   let tdee = bmr * activityFactor;
 
-  // If you want to handle “gaining” or “losing,” you’d do tdee += or -= 500 here if stored.
-  // For now, let’s assume “maintaining.”
+  // NEW: Apply the user's goal from the DB
+  // E.g. "gaining" => +500, "losing" => -500, "maintaining" => do nothing
+  if (goal === "gaining") {
+    tdee += 500;
+  } else if (goal === "losing") {
+    tdee -= 500;
+  }
+  // else if (goal === "maintaining" or undefined), do nothing
 
-  // Convert TDEE to daily macros in a ratio. Example ratio:
-  // 30% protein, 40% carbs, 30% fat. Each gram protein/carb ~4kcal, fat ~9kcal
-  // Adjust as needed:
+  // Convert TDEE to daily macros in a ratio (30% protein, 40% carbs, 30% fat)
   let calFromProtein = 0.3 * tdee;
-  let calFromCarbs = 0.4 * tdee;
-  let calFromFats = 0.3 * tdee;
+  let calFromCarbs   = 0.4 * tdee;
+  let calFromFats    = 0.3 * tdee;
 
   let protein = calFromProtein / 4;
-  let carbs = calFromCarbs / 4;
-  let fats = calFromFats / 9;
+  let carbs   = calFromCarbs / 4;
+  let fats    = calFromFats / 9;
 
   return {
     calories: Math.round(tdee),
-    protein: Math.round(protein),
-    carbs: Math.round(carbs),
-    fats: Math.round(fats)
+    protein:  Math.round(protein),
+    carbs:    Math.round(carbs),
+    fats:     Math.round(fats)
   };
 }
 
@@ -104,16 +105,20 @@ async function loadDashboardMacros() {
     }
 
     // Update progress bar text values
-    document.getElementById("energy").textContent = `${totals.calories.toFixed(2)} / ${userTargets.calories} kcal`;
-    document.getElementById("protein").textContent = `${totals.protein.toFixed(2)} / ${userTargets.protein} g`;
-    document.getElementById("carbs").textContent = `${totals.carbs.toFixed(2)} / ${userTargets.carbs} g`;
-    document.getElementById("fat").textContent = `${totals.fats.toFixed(2)} / ${userTargets.fats} g`;
+    document.getElementById("energy").textContent =
+      `${totals.calories.toFixed(2)} / ${userTargets.calories} kcal`;
+    document.getElementById("protein").textContent =
+      `${totals.protein.toFixed(2)} / ${userTargets.protein} g`;
+    document.getElementById("carbs").textContent =
+      `${totals.carbs.toFixed(2)} / ${userTargets.carbs} g`;
+    document.getElementById("fat").textContent =
+      `${totals.fats.toFixed(2)} / ${userTargets.fats} g`;
 
     // Calculate percentages (capped at 100%)
     const energyPercent = Math.min((totals.calories / userTargets.calories) * 100, 100);
     const proteinPercent = Math.min((totals.protein / userTargets.protein) * 100, 100);
-    const carbsPercent = Math.min((totals.carbs / userTargets.carbs) * 100, 100);
-    const fatsPercent = Math.min((totals.fats / userTargets.fats) * 100, 100);
+    const carbsPercent   = Math.min((totals.carbs / userTargets.carbs) * 100, 100);
+    const fatsPercent    = Math.min((totals.fats / userTargets.fats) * 100, 100);
 
     // Update the width of the progress bars
     const progressBars = document.querySelectorAll(".progress-bar .bar");

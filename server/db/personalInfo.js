@@ -1,5 +1,3 @@
-// personalInfo.js
-
 const { connectDB } = require('./db');
 
 /**
@@ -13,6 +11,7 @@ const { connectDB } = require('./db');
  * @param {number} data.weight
  * @param {string} data.firstName
  * @param {string} data.lastName
+ * @param {string} [data.goal]       // NEW: optional, e.g. "gain", "maintain", "lose"
  * @returns {Promise<{success: boolean, insertId?: number, error?: string}>}
  */
 async function insertPersonalInfo({
@@ -23,6 +22,7 @@ async function insertPersonalInfo({
   weight,
   firstName,
   lastName,
+  goal,           // optional
 }) {
   let connection;
 
@@ -47,13 +47,17 @@ async function insertPersonalInfo({
       throw new Error('First and last names must be non-empty.');
     }
 
+    // If goal is not provided, you can decide on a default or just store NULL
+    // For example:
+    const finalGoal = goal ? goal.trim() : null;
+
     connection = await connectDB();
 
     // Insert the data into personalinformation
     const sql = `
       INSERT INTO personalinformation
-      (user_id, sex, height, age, weight, first_name, last_name)
-      VALUES (?, ?, ?, ?, ?, ?, ?)
+      (user_id, sex, height, age, weight, first_name, last_name, goal)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     `;
     const [result] = await connection.execute(sql, [
       userId,
@@ -63,6 +67,7 @@ async function insertPersonalInfo({
       weight,
       firstName.trim(),
       lastName.trim(),
+      finalGoal,
     ]);
 
     return { success: true, insertId: result.insertId };

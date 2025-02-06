@@ -1,5 +1,3 @@
-// PIRoutes.js
-
 const express = require('express');
 const router = express.Router();
 const Joi = require('joi');
@@ -14,6 +12,8 @@ const personalInfoSchema = Joi.object({
   weight: Joi.number().positive().required(),
   firstName: Joi.string().min(1).max(50).required(),
   lastName: Joi.string().min(1).max(50).required(),
+  // NEW: goal is optional, must be one of "gain", "maintain", or "lose" if present
+  goal: Joi.string().valid('gain', 'maintain', 'lose').optional()
 });
 
 const getPersonalInfoSchema = Joi.object({
@@ -26,13 +26,24 @@ const getPersonalInfoSchema = Joi.object({
  */
 router.post('/addPI', async (req, res) => {
   console.log('Received body:', req.body);
-  const { error, value } = personalInfoSchema.validate(req.body);
 
+  // Validate request body
+  const { error, value } = personalInfoSchema.validate(req.body);
   if (error) {
     return res.status(400).json({ error: error.details[0].message });
   }
 
-  const { userId, sex, height, age, weight, firstName, lastName } = value;
+  // Destructure validated values
+  const {
+    userId,
+    sex,
+    height,
+    age,
+    weight,
+    firstName,
+    lastName,
+    goal // might be undefined if not provided
+  } = value;
 
   // Insert into DB
   const result = await insertPersonalInfo({
@@ -43,6 +54,7 @@ router.post('/addPI', async (req, res) => {
     weight,
     firstName,
     lastName,
+    goal
   });
 
   if (!result.success) {
@@ -73,7 +85,7 @@ router.get('/getPI', async (req, res) => {
     return res.status(404).json({ error: result.error });
   }
 
-  // Return the personal information
+  // Return the personal information (including 'goal' if present)
   res.status(200).json(result.data);
 });
 
