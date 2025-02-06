@@ -1,52 +1,64 @@
-/* Body & Wrapper to match dark theme from index */
+/* Ensure body is a flex container to center content */
 body {
   background-color: #1e1b1b;
   color: #fff;
-  margin: 0;
   font-family: Arial, sans-serif;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   height: 100vh;
-  overflow: hidden; /* Keep scroll from showing if not needed */
-  position: relative; /* So we can place .tap-label absolutely */
 }
 
-/* A label at the bottom right to prompt flipping back to sign in */
-.tap-label {
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
-  color: #fff;
-  font-size: 14px;
-  opacity: 0.7;
-}
-
-/* Main container to center the flip card */
+/* Wrapper */
 .wrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  width: 100%;
   height: 100%;
 }
 
-/* switch card */
+/* Center the switch card */
+.card-switch {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 340px;
+}
+
+/* Flip Card */
+.flip-card__inner {
+  width: 320px; /* Slightly larger */
+  height: 350px; /* Adjusted height */
+  position: relative;
+  perspective: 1000px;
+  text-align: center;
+  transition: transform 0.8s;
+  transform-style: preserve-3d;
+}
+
+/* Fix the switch card alignment */
 .switch {
-  transform: translateY(-70px);
   position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 250px; /* Adjust if needed for your layout */
-  width: 340px;
-  height: 100px;
+  width: 100%;
+  height: auto;
+  gap: 20px; /* Reduce the gap */
+  transform: translateY(0); /* No need to shift up */
 }
 
+/* Center login and signup labels */
 .card-side::before {
   position: absolute;
   content: 'Log in';
-  left: -70px;
-  top: 270px; /* Adjust if needed */
-  width: 340px;
+  left: 50%;
+  transform: translateX(-50%);
+  top: -40px;
   text-decoration: underline;
   color: #fff;
   font-weight: 600;
@@ -55,43 +67,29 @@ body {
 .card-side::after {
   position: absolute;
   content: 'Sign up';
-  left: 70px;
-  top: 270px; /* Adjust if needed */
-  width: 340px;
+  left: 50%;
+  transform: translateX(-50%);
+  top: -20px;
   text-decoration: none;
   color: #fff;
   font-weight: 600;
 }
 
-/* Card Flip Animation */
-.flip-card__inner {
-  width: 300px;
-  height: 300px; /* Adjusted height for the forms */
-  position: relative;
-  perspective: 1000px;
-  text-align: center;
-  transition: transform 0.8s;
-  transform-style: preserve-3d;
-}
-
-.toggle:checked ~ .flip-card__inner {
-  transform: rotateY(180deg);
-}
-
+/* Flip Card Styling */
 .flip-card__front, .flip-card__back {
   padding: 20px;
   position: absolute;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center; /* Center content horizontally */
+  align-items: center;
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
-  background: #2b2929; /* match container color from index */
+  background: #2b2929;
   gap: 15px;
   border-radius: 5px;
-  border: 2px solid #a83c3c; /* red accent color from index */
-  box-shadow: 4px 4px #a83c3c; /* accent shadow */
+  border: 2px solid #a83c3c;
+  box-shadow: 4px 4px #a83c3c;
   width: 100%;
   height: 100%;
 }
@@ -100,34 +98,26 @@ body {
   transform: rotateY(180deg);
 }
 
-/* Inputs */
+/* Input fields - fixed alignment */
 .flip-card__input {
-  width: 250px;
+  width: 260px;
   height: 40px;
   border-radius: 5px;
   border: 2px solid #a83c3c;
-  background-color: #1e1b1b; /* A bit darker input background */
+  background-color: #1e1b1b;
   box-shadow: 4px 4px #a83c3c;
   font-size: 15px;
   font-weight: 600;
   color: #fff;
   padding: 5px 10px;
   outline: none;
+  text-align: center;
 }
 
-.flip-card__input::placeholder {
-  color: #ccc;
-  opacity: 0.8;
-}
-
-.flip-card__input:focus {
-  border: 2px solid #fff;
-}
-
-/* Confirm buttons */
+/* Adjust buttons */
 .flip-card__btn {
   margin: 10px 0;
-  width: 120px;
+  width: 150px;
   height: 40px;
   border-radius: 5px;
   border: 2px solid #a83c3c;
@@ -139,14 +129,17 @@ body {
   cursor: pointer;
 }
 
-.flip-card__btn:active {
-  box-shadow: 0px 0px #a83c3c;
-  transform: translate(3px, 3px);
+/* Fix floating checkbox */
+.toggle {
+  display: none; /* Hide the checkbox */
 }
 
-/* Titles */
-.title {
-  font-size: 22px;
-  font-weight: bold;
+/* Adjust the tap-to-sign-in label */
+.tap-label {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
   color: #fff;
+  font-size: 14px;
+  opacity: 0.7;
 }
