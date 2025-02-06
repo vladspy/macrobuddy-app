@@ -78,7 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
   
           alert("✅ Login successful!");
           // Redirect to index.js for a successful login.
-          window.location.href = "/index.js";
+          window.location.href = "/index.html";
         } else {
           console.error("❌ Login failed:", data.error || "An unknown error occurred.");
           alert("❌ Login failed: " + (data.error || "An unknown error occurred."));
