@@ -128,7 +128,7 @@ document.addEventListener("DOMContentLoaded", () => {
           localStorage.setItem("isLoggedIn", "true");
           localStorage.setItem("email", email);
   
-          window.location.href = "/public/profile.html"; // Redirect to profile
+          window.location.href = "profile.html"; // Redirect to profile
         } else {
           alert("❌ Signup failed: " + (data.error || "An unknown error occurred."));
         }
