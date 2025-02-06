@@ -1,5 +1,16 @@
 const SERVER_IP = "http://51.124.187.58:3000"; // ✅ Your Azure server
 
+document.addEventListener("DOMContentLoaded", () => {
+    const userId = localStorage.getItem("userId");
+
+    if (!userId) {
+        alert("❌ You need to log in first.");
+        window.location.href = "login.html";
+    } else {
+        loadUserMacros(userId); // ✅ Fetch stored macros when page loads
+    }
+});
+
 let debounceTimer;
 
 // ✅ Attach event listener to food search input
@@ -65,14 +76,20 @@ function displayFoodResults(foods) {
 
 // ✅ Add selected food to the list and database
 async function addFoodToList(food) {
-    let userId = 1; // ✅ Replace with actual logged-in user ID
+    let userId = localStorage.getItem("userId"); // ✅ Dynamically get userId
+    if (!userId) {
+        console.error("❌ No user ID found. Ensure user is logged in.");
+        alert("❌ Error: No user ID found. Please log in again.");
+        return;
+    }
+
     let foodList = document.getElementById("foodEntries");
 
     let foodItem = document.createElement("li");
     foodItem.textContent = `${food.product_name} - ${food.energy_kcal} kcal`;
     foodList.appendChild(foodItem);
 
-    updateMacroTotals(food); // ✅ Update the macro totals after adding food
+    updateMacroTotals(food);
 
     try {
         let response = await fetch(`${SERVER_IP}/api/macros/addMacros`, {
@@ -80,7 +97,7 @@ async function addFoodToList(food) {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 userId,
-                food_name: food.product_name,  // ✅ Ensure this is being sent
+                food_name: food.product_name,
                 protein: food.protein,
                 carbs: food.carbs,
                 fats: food.fats,
@@ -90,6 +107,8 @@ async function addFoodToList(food) {
 
         let data = await response.json();
         if (!response.ok) throw new Error(data.error || "Error adding food to database");
+
+        console.log("✅ Food added successfully:", food.product_name);
     } catch (error) {
         console.error("❌ Error adding food:", error);
     }
@@ -108,26 +127,25 @@ function updateMacroTotals(food) {
 }
 
 // ✅ Fetch and display user's stored food on page load
-async function loadUserMacros() {
-    let userId = 1; // ✅ Replace with actual logged-in user ID
+async function loadUserMacros(userId) {
     try {
         let response = await fetch(`${SERVER_IP}/api/macros/getMacros?userId=${userId}`);
         let data = await response.json();
 
         if (!response.ok) throw new Error(data.error || "Error fetching macros");
 
+        let foodList = document.getElementById("foodEntries");
+
         data.forEach(food => {
-            let foodList = document.getElementById("foodEntries");
             let foodItem = document.createElement("li");
             foodItem.textContent = `${food.food_name} - ${food.calories} kcal`;
             foodList.appendChild(foodItem);
 
             updateMacroTotals(food);
         });
+
+        console.log("✅ Loaded macros for user:", userId);
     } catch (error) {
         console.error("❌ Error loading macros:", error);
     }
 }
-
-// ✅ Load stored food when the page loads
-document.addEventListener("DOMContentLoaded", loadUserMacros);

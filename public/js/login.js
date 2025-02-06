@@ -34,9 +34,12 @@ document.addEventListener("DOMContentLoaded", () => {
             const data = await response.json();
             if (response.ok) {
                 console.log("✅ Login successful!");
+
+                // ✅ Store session details
                 localStorage.setItem("isLoggedIn", "true");
                 localStorage.setItem("authToken", data.token);
                 localStorage.setItem("email", email);
+                localStorage.setItem("userId", data.userId); // ✅ Store userId for later use
 
                 alert("✅ Login successful!");
                 window.location.href = "index.html";
@@ -50,11 +53,11 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // ✅ Handle Sign Up (Updated to store username and redirect to profile)
+    // ✅ Handle Sign Up (Updated to store userId and redirect to profile)
     signupForm.addEventListener('submit', async (event) => {
         event.preventDefault();
 
-        const username = document.getElementById('signup-username').value; // Updated field
+        const username = document.getElementById('signup-username').value;
         const email = document.getElementById('signup-email').value;
         const password = document.getElementById('signup-password').value;
 
@@ -70,7 +73,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
-                body: JSON.stringify({ username, email, password }) // Ensure `username` is sent
+                body: JSON.stringify({ username, email, password })
             });
 
             const data = await response.json();
@@ -81,7 +84,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 // ✅ Store session details
                 localStorage.setItem("isLoggedIn", "true");
                 localStorage.setItem("email", email);
-                localStorage.setItem("username", username); // ✅ Store username
+                localStorage.setItem("username", username);
+                localStorage.setItem("userId", data.userId); // ✅ Store userId from response
 
                 // ✅ Redirect to Profile Page instead of Index
                 window.location.href = "profile.html";

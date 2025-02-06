@@ -15,7 +15,7 @@ const verifyPassword = async (storedHash, inputPassword) => {
 
 const verifyUser = async (email, password) => {
     try {
-        console.log("🔍 Login attempt:", email, password);
+        console.log("🔍 Login attempt:", email);
 
         const connection = await connectDB();
         const [rows] = await connection.execute("SELECT * FROM user WHERE email = ?", [email]);
@@ -29,15 +29,22 @@ const verifyUser = async (email, password) => {
         const isValid = await verifyPassword(storedHash, password);
 
         if (isValid) {
+            const userId = rows[0].id; // ✅ Fetch userId from the database
+
             // ✅ Generate JWT Token
             const token = jwt.sign(
-                { id: rows[0].id, email: rows[0].email },
+                { id: userId, email: rows[0].email },
                 SECRET_KEY,
                 { expiresIn: "1h" }
             );
 
             console.log("✅ User verified successfully:", email);
-            return { success: true, message: "User verified successfully!", token };
+            return { 
+                success: true, 
+                message: "User verified successfully!", 
+                token, 
+                userId // ✅ Send userId to the frontend
+            };
         } else {
             console.log("❌ Invalid credentials for:", email);
             return { success: false, error: "Invalid email or password." };
