@@ -25,26 +25,25 @@ const addUser = async (username, email, plainTextPassword) => {
     // Connect to the database
     const connection = await connectDB();
 
-    // SQL query to insert the user into the database
-    const [rows] = await connection.execute('SELECT * FROM user WHERE username = ?', [username]);
+    // Check if the user already exists
+    const [rows] = await connection.execute('SELECT * FROM user WHERE email = ?', [email]);
     if (rows.length > 0) {
-      return { success: false, error: 'User  already exists!' };
+      return { success: false, error: 'User already exists!' };
     }
+
+    // Insert the new user
     const [result] = await connection.execute(
       'INSERT INTO user (username, email, hashed_password) VALUES (?, ?, ?)',
       [username, email, hashedPassword]
     );
-    return { success: true, message: 'User added successfully!' };
+
+    return { success: true, message: 'User added successfully!', userId: result.insertId };
   } catch (error) {
     console.error('Error adding user:', error.message);
     return { success: false, error: error.message };
   }
-
-
-
 };
 
-
 module.exports = {
-  addUser
+  addUser,
 };
