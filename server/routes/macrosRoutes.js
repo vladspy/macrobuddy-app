@@ -1,4 +1,5 @@
 // routes/macroRoutes.js
+
 const express = require('express');
 const router = express.Router();
 const Joi = require('joi');
@@ -7,13 +8,18 @@ const { addMacro, getMacros, deleteLastMacro } = require('../db/macros');
 // --- Stub function to simulate USDA nutritional data lookup ---
 // In a real implementation, you would query the USDA API here.
 const getUSDAData = async (food_name) => {
+  // Sanitize input: lowercase and trim
+  const key = food_name.toLowerCase().trim();
   // Example static data for demonstration:
   const foods = {
     "apple": { caloriesPer100g: 52, proteinPer100g: 0.3, carbsPer100g: 14, fatsPer100g: 0.2 },
     "banana": { caloriesPer100g: 89, proteinPer100g: 1.1, carbsPer100g: 23, fatsPer100g: 0.3 },
     "chicken breast": { caloriesPer100g: 165, proteinPer100g: 31, carbsPer100g: 0, fatsPer100g: 3.6 }
   };
-  return foods[food_name.toLowerCase()] || { caloriesPer100g: 100, proteinPer100g: 2, carbsPer100g: 20, fatsPer100g: 1 };
+  console.log("Looking up USDA data for key:", key);
+  // Fallback values: note that fallback caloriesPer100g is 100, so if fallback is used,
+  // calories = 100 * (weight/100) = weight.
+  return foods[key] || { caloriesPer100g: 100, proteinPer100g: 2, carbsPer100g: 20, fatsPer100g: 1 };
 };
 
 // Validation schema for adding macros
@@ -49,6 +55,7 @@ router.post('/addMacros', async (req, res) => {
       carbs: usdaData.carbsPer100g * (weight / 100),
       fats: usdaData.fatsPer100g * (weight / 100)
     };
+    console.log("Calculated macros:", calculatedMacros);
 
     // Insert the macro entry with the calculated nutritional values
     await addMacro(userId, { food_name, weight, ...calculatedMacros });
@@ -58,7 +65,7 @@ router.post('/addMacros', async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
-  
+
 // ✅ Route to get macros
 router.get('/getMacros', async (req, res) => {
   const { error, value } = getMacrosSchema.validate(req.query);
