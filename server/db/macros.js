@@ -39,10 +39,12 @@ const addMacro = async (userId, macros) => {
       throw new Error(`User with ID ${userId} does not exist`);
   }
 
-  // Insert macro with the provided details, including weight if provided.
+  // IMPORTANT: Adjust the column order to match your table schema.
+  // For a table defined as (macro_id, user_id, food_name, weight, protein, carbs, fats, calories, date),
+  // the INSERT should be:
   const [insertResult] = await connection.execute(
-      'INSERT INTO macros (user_id, food_name, protein, carbs, fats, calories, weight) VALUES (?, ?, ?, ?, ?, ?, ?)',
-      [userId, macros.food_name, macros.protein, macros.carbs, macros.fats, macros.calories, macros.weight || null]
+      'INSERT INTO macros (user_id, food_name, weight, protein, carbs, fats, calories) VALUES (?, ?, ?, ?, ?, ?, ?)',
+      [userId, macros.food_name, macros.weight || null, macros.protein, macros.carbs, macros.fats, macros.calories]
   );
 
   connection.release();
