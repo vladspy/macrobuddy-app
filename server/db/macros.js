@@ -9,7 +9,9 @@ const { connectDB } = require('./db');
 const getMacros = async (userId) => {
   const connection = await connectDB();
   const [rows] = await connection.execute(
-    'SELECT * FROM macros WHERE user_id = ?',
+    `SELECT * FROM macros 
+     WHERE user_id = ? 
+       AND DATE(date) = CURDATE()`,  // This condition filters for entries from today
     [userId]
   );
   connection.release();
