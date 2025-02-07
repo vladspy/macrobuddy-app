@@ -1,16 +1,17 @@
+// db/macros.js
 const { connectDB } = require('./db');
 
 /**
- * Retrieve macros for a user.
+ * Retrieve macros for a user from today's entries.
  * @param {number} userId - The ID of the user.
  * @returns {Promise<Array>} - Array of macros records for the user.
  */
 const getMacros = async (userId) => {
   const connection = await connectDB();
   const [rows] = await connection.execute(
-    `SELECT * FROM macros 
-     WHERE user_id = ? 
-       AND DATE(date) = CURDATE()`,  // This condition filters for entries from today
+    `SELECT * FROM macros
+     WHERE user_id = ?
+       AND DATE(date) = CURDATE()`, // This condition filters for today's entries
     [userId]
   );
   connection.release();
@@ -29,29 +30,46 @@ const addMacro = async (userId, macros) => {
 
   // Ensure user exists before inserting
   const [userRows] = await connection.execute(
-      'SELECT * FROM user WHERE user_id = ?',
-      [userId]
+    'SELECT * FROM user WHERE user_id = ?',
+    [userId]
   );
-
   if (userRows.length === 0) {
-      connection.release();
-      throw new Error(`User with ID ${userId} does not exist`);
+    connection.release();
+    throw new Error(`User with ID ${userId} does not exist`);
   }
 
-  // IMPORTANT: Adjust the column order to match your table's schema.
-  // For a table defined as (macro_id, user_id, food_name, calories, protein, carbs, fats, weight, date),
-  // the INSERT should be:
+  /**
+   * IMPORTANT:
+   * Your table should be (macro_id PK, user_id, food_name, calories, protein, carbs, fats, weight, date).
+   * That means: 
+   *    1) user_id
+   *    2) food_name
+   *    3) calories
+   *    4) protein
+   *    5) carbs
+   *    6) fats
+   *    7) weight
+   *    8) date (auto-filled by default or with a DEFAULT CURRENT_TIMESTAMP, for example)
+   *
+   * Make sure your DB column order matches exactly the columns in this INSERT statement below.
+   * Otherwise, if your actual "weight" column is physically before "calories" in the schema,
+   * you need to reorder the statement or fix your table schema accordingly.
+   */
   const [insertResult] = await connection.execute(
-      'INSERT INTO macros (user_id, food_name, calories, protein, carbs, fats, weight) VALUES (?, ?, ?, ?, ?, ?, ?)',
-      [
-        userId,
-        macros.food_name,
-        macros.calories, // calculated calories
-        macros.protein,
-        macros.carbs,
-        macros.fats,
-        macros.weight || null
-      ]
+    `
+      INSERT INTO macros 
+      (user_id, food_name, calories, protein, carbs, fats, weight)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
+    `,
+    [
+      userId,
+      macros.food_name,
+      macros.calories, // e.g. 156 if apple 300g
+      macros.protein,
+      macros.carbs,
+      macros.fats,
+      macros.weight || null
+    ]
   );
 
   connection.release();
@@ -59,7 +77,7 @@ const addMacro = async (userId, macros) => {
 };
 
 /**
- * Delete the last macro entry for a user.
+ * Delete the last macro entry for a user (by highest macro_id).
  * @param {number} userId - The user ID.
  * @returns {Promise<object>} - The deleted macro record.
  */
@@ -76,7 +94,6 @@ const deleteLastMacro = async (userId) => {
     connection.release();
     throw new Error("No macro entries found to delete.");
   }
-
   const lastMacro = rows[0];
 
   // Delete the entry using macro_id
@@ -100,4 +117,9 @@ const truncateMacros = async () => {
   return { message: 'Macros table has been truncated' };
 };
 
-module.exports = { getMacros, addMacro, deleteLastMacro, truncateMacros };
+module.exports = {
+  getMacros,
+  addMacro,
+  deleteLastMacro,
+  truncateMacros
+};
