@@ -2,24 +2,11 @@
 const express = require('express');
 const router = express.Router();
 const Joi = require('joi');
+const axios = require('axios');
 const { addMacro, getMacros, deleteLastMacro } = require('../db/macros');
 
-// --- Stub function to simulate USDA nutritional data lookup ---
-// In a real implementation, you would query the USDA API here.
-const getUSDAData = async (food_name) => {
-  // Example static data for demonstration:
-  const foods = {
-    "apple":          { caloriesPer100g:  52, proteinPer100g: 0.3,  carbsPer100g: 14,  fatsPer100g: 0.2 },
-    "banana":         { caloriesPer100g:  89, proteinPer100g: 1.1,  carbsPer100g: 23,  fatsPer100g: 0.3 },
-    "chicken breast": { caloriesPer100g: 165, proteinPer100g: 31,   carbsPer100g: 0,   fatsPer100g: 3.6 }
-  };
-  return foods[food_name.toLowerCase()] || { 
-    caloriesPer100g: 100, 
-    proteinPer100g: 2, 
-    carbsPer100g: 20, 
-    fatsPer100g: 1 
-  };
-};
+// Use the internal USDA search API from foodRoutes.js
+const USDA_SEARCH_API = "http://localhost:3000/api/food/search"; // Adjust if hosted elsewhere
 
 // Validation schema for adding macros
 const addMacrosSchema = Joi.object({
@@ -35,7 +22,7 @@ const getMacrosSchema = Joi.object({
 
 // ✅ Route to add macros
 router.post('/addMacros', async (req, res) => {
-  // Validate the input
+  // Validate input
   const { error, value } = addMacrosSchema.validate(req.body);
   if (error) {
     return res.status(400).json({ error: error.details[0].message });
@@ -43,19 +30,26 @@ router.post('/addMacros', async (req, res) => {
   const { userId, food_name, weight } = value;
 
   try {
-    // 1) Lookup USDA data for the food item
-    const usdaData = await getUSDAData(food_name);
+    // 🔍 Fetch USDA food data from foodRoutes.js
+    console.log(`Requesting USDA data for: ${food_name}`);
+    const response = await axios.get(`${USDA_SEARCH_API}?query=${encodeURIComponent(food_name)}`);
 
-    // 2) Calculate nutritional values based on weight (grams)
-    //    Formula: (per100g value) * (weight / 100)
+    if (!response.data.foods || response.data.foods.length === 0) {
+      return res.status(404).json({ error: "No USDA data found for the given food item." });
+    }
+
+    // ✅ Extract first food item data
+    const usdaData = response.data.foods[0];
+
+    // 🔢 Calculate macronutrients based on weight
     const calculatedMacros = {
-      calories: usdaData.caloriesPer100g * (weight / 100),
-      protein:  usdaData.proteinPer100g  * (weight / 100),
-      carbs:    usdaData.carbsPer100g    * (weight / 100),
-      fats:     usdaData.fatsPer100g     * (weight / 100),
+      calories: usdaData.calories * (weight / 100),
+      protein:  usdaData.protein  * (weight / 100),
+      carbs:    usdaData.carbs    * (weight / 100),
+      fats:     usdaData.fats     * (weight / 100),
     };
 
-    // 3) Insert the macro entry with the calculated nutritional values
+    // ✅ Save to database
     await addMacro(userId, { 
       food_name, 
       weight, 
@@ -87,10 +81,10 @@ router.get('/getMacros', async (req, res) => {
       return res.status(404).json({ error: 'No macro data found for the given user.' });
     }
 
-    // (Optional) map the result to include a "time" property aliasing the "date" column
+    // Map results to include a "time" property aliasing the "date" column
     const result = macroData.map(item => ({
       ...item,
-      time: item.date, // Alias 'date' as 'time'
+      time: item.date,
     }));
     return res.status(200).json(result);
   } catch (err) {
