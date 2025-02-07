@@ -9,7 +9,7 @@
     <!-- This script forces a reload if the page is loaded via the back/forward cache -->
     <script>
       // Using the pageshow event to detect when a page is loaded from cache.
-      window.addEventListener('pageshow', function (event) {
+      window.addEventListener("pageshow", function (event) {
         if (event.persisted) {
           window.location.reload();
         }
@@ -22,9 +22,6 @@
   </head>
   <body>
     <div class="top-bar"></div>
-
-    <!-- New element for displaying server time -->
-    <div id="serverTime"></div>
 
     <div class="tracker-container">
       <div class="progress-bar">
