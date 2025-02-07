@@ -1,3 +1,4 @@
+// routes/macroRoutes.js
 const express = require('express');
 const router = express.Router();
 const Joi = require('joi');
@@ -11,6 +12,7 @@ const addMacrosSchema = Joi.object({
   carbs: Joi.number().required(),
   fats: Joi.number().required(),
   calories: Joi.number().required(),
+  weight: Joi.number().optional(),
 });
 
 // Validation schema for getting macros
@@ -20,14 +22,14 @@ const getMacrosSchema = Joi.object({
 
 // ✅ Route to add macros
 router.post('/addMacros', async (req, res) => {
-  const { userId, food_name, protein, carbs, fats, calories } = req.body;
+  const { userId, food_name, protein, carbs, fats, calories, weight } = req.body;
 
   if (!userId || !food_name || !calories) {
       return res.status(400).json({ error: "Missing required fields" });
   }
 
   try {
-      await addMacro(userId, { food_name, protein, carbs, fats, calories });
+      await addMacro(userId, { food_name, protein, carbs, fats, calories, weight });
       res.status(201).json({ message: 'Macros added successfully!' });
   } catch (err) {
       console.error('Error adding macros:', err.message);
@@ -49,7 +51,12 @@ router.get('/getMacros', async (req, res) => {
     if (!macroData || macroData.length === 0) {
       return res.status(404).json({ error: 'No macro data found for the given user.' });
     }
-    res.status(200).json(macroData);
+    // Map the result to include a "time" property aliasing the "date" column.
+    const result = macroData.map(item => ({
+      ...item,
+      time: item.date, // Alias 'date' as 'time'
+    }));
+    res.status(200).json(result);
   } catch (err) {
     console.error('Error retrieving macros:', err.message);
     res.status(500).json({ error: 'Internal server error while retrieving macros.' });

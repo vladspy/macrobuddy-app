@@ -1,5 +1,3 @@
-// dashboard.js
-
 const SERVER_IP = "http://51.124.187.58:3000"; // Same server as in search.js
 
 // If for some reason personal info not found, fallback to these defaults
@@ -134,24 +132,47 @@ async function loadDashboardMacros() {
     tbody.innerHTML = "";
     if (Array.isArray(data) && data.length > 0) {
       data.forEach((food) => {
+        // Use the "date" field to show when the item was added.
+        const dateAdded = food.date ? new Date(food.date).toLocaleString() : "-";
+        // Weight may be null; show as "-" if not provided.
+        const weightDisplay = food.weight !== null && food.weight !== undefined ? food.weight : "-";
+
         const row = document.createElement("tr");
         row.innerHTML = `
-          <td>${food.time || "-"}</td>
+          <td>${dateAdded}</td>
           <td>${food.food_name}</td>
           <td>${parseFloat(food.calories).toFixed(2)}</td>
           <td>${parseFloat(food.protein).toFixed(2)}</td>
           <td>${parseFloat(food.carbs).toFixed(2)}</td>
           <td>${parseFloat(food.fats).toFixed(2)}</td>
+          <td>${weightDisplay}</td>
         `;
         tbody.appendChild(row);
       });
     } else {
       const row = document.createElement("tr");
-      row.innerHTML = `<td colspan="6" style="text-align: center;">No macros logged yet.</td>`;
+      row.innerHTML = `<td colspan="7" style="text-align: center;">No macros logged yet.</td>`;
       tbody.appendChild(row);
     }
   } catch (error) {
     console.error("❌ Error loading dashboard macros:", error);
+  }
+}
+
+// New function to load server time
+async function loadServerTime() {
+  try {
+    const timeResponse = await fetch(`${SERVER_IP}/api/time`);
+    if (timeResponse.ok) {
+      const timeData = await timeResponse.json();
+      // Assuming timeData has a property 'time' that contains the current time as a string
+      document.getElementById("serverTime").textContent = "Current Server Time: " + timeData.time;
+    } else {
+      document.getElementById("serverTime").textContent = "Current Server Time: Unavailable";
+    }
+  } catch (error) {
+    console.error("❌ Error fetching server time:", error);
+    document.getElementById("serverTime").textContent = "Current Server Time: Error";
   }
 }
 
@@ -171,4 +192,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
   // Load macros and update dashboard
   loadDashboardMacros();
+  // Load server time
+  loadServerTime();
 });

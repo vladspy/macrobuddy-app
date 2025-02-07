@@ -1,5 +1,4 @@
 // db/macros.js
-
 const { connectDB } = require('./db');
 
 /**
@@ -21,7 +20,7 @@ const getMacros = async (userId) => {
  * Add macro data for a user.
  * Checks if the user exists first (by user_id).
  * @param {number} userId - The user ID.
- * @param {object} macros - The macros object (protein, carbs, fats, calories, food_name).
+ * @param {object} macros - The macros object (food_name, protein, carbs, fats, calories, weight).
  * @returns {Promise<object>} - The result of the INSERT query.
  */
 const addMacro = async (userId, macros) => {
@@ -38,10 +37,10 @@ const addMacro = async (userId, macros) => {
       throw new Error(`User with ID ${userId} does not exist`);
   }
 
-  // Insert macro with the provided details
+  // Insert macro with the provided details, including weight if provided.
   const [insertResult] = await connection.execute(
-      'INSERT INTO macros (user_id, food_name, protein, carbs, fats, calories) VALUES (?, ?, ?, ?, ?, ?)',
-      [userId, macros.food_name, macros.protein, macros.carbs, macros.fats, macros.calories]
+      'INSERT INTO macros (user_id, food_name, protein, carbs, fats, calories, weight) VALUES (?, ?, ?, ?, ?, ?, ?)',
+      [userId, macros.food_name, macros.protein, macros.carbs, macros.fats, macros.calories, macros.weight || null]
   );
 
   connection.release();
