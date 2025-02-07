@@ -4,15 +4,24 @@ const router = express.Router();
 const Joi = require('joi');
 const { addMacro, getMacros, deleteLastMacro } = require('../db/macros');
 
+// --- Stub function to simulate USDA nutritional data lookup ---
+// In a real implementation, you would query the USDA API here.
+const getUSDAData = async (food_name) => {
+  // Example static data for demonstration:
+  const foods = {
+    "apple": { caloriesPer100g: 52, proteinPer100g: 0.3, carbsPer100g: 14, fatsPer100g: 0.2 },
+    "banana": { caloriesPer100g: 89, proteinPer100g: 1.1, carbsPer100g: 23, fatsPer100g: 0.3 },
+    "chicken breast": { caloriesPer100g: 165, proteinPer100g: 31, carbsPer100g: 0, fatsPer100g: 3.6 }
+  };
+  return foods[food_name.toLowerCase()] || { caloriesPer100g: 100, proteinPer100g: 2, carbsPer100g: 20, fatsPer100g: 1 };
+};
+
 // Validation schema for adding macros
+// Now we require food_name and weight; the nutritional values will be calculated.
 const addMacrosSchema = Joi.object({
   userId: Joi.number().integer().required(),
   food_name: Joi.string().required(),
-  protein: Joi.number().required(),
-  carbs: Joi.number().required(),
-  fats: Joi.number().required(),
-  calories: Joi.number().required(),
-  weight: Joi.number().optional(),
+  weight: Joi.number().required() // weight in grams is required
 });
 
 // Validation schema for getting macros
@@ -22,18 +31,31 @@ const getMacrosSchema = Joi.object({
 
 // ✅ Route to add macros
 router.post('/addMacros', async (req, res) => {
-  const { userId, food_name, protein, carbs, fats, calories, weight } = req.body;
-
-  if (!userId || !food_name || !calories) {
-      return res.status(400).json({ error: "Missing required fields" });
+  // Validate the input
+  const { error, value } = addMacrosSchema.validate(req.body);
+  if (error) {
+    return res.status(400).json({ error: error.details[0].message });
   }
+  const { userId, food_name, weight } = value;
 
   try {
-      await addMacro(userId, { food_name, protein, carbs, fats, calories, weight });
-      res.status(201).json({ message: 'Macros added successfully!' });
+    // Lookup USDA data for the food item
+    const usdaData = await getUSDAData(food_name);
+    // Calculate nutritional values based on weight (assumed to be in grams)
+    // Formula: (per100g value) * (weight / 100)
+    const calculatedMacros = {
+      calories: usdaData.caloriesPer100g * (weight / 100),
+      protein: usdaData.proteinPer100g * (weight / 100),
+      carbs: usdaData.carbsPer100g * (weight / 100),
+      fats: usdaData.fatsPer100g * (weight / 100)
+    };
+
+    // Insert the macro entry with the calculated nutritional values
+    await addMacro(userId, { food_name, weight, ...calculatedMacros });
+    res.status(201).json({ message: 'Macros added successfully!', data: calculatedMacros });
   } catch (err) {
-      console.error('Error adding macros:', err.message);
-      res.status(500).json({ error: 'Internal server error' });
+    console.error('Error adding macros:', err.message);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
   
