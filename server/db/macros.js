@@ -1,4 +1,3 @@
-// db/macros.js
 const { connectDB } = require('./db');
 
 /**
@@ -39,12 +38,20 @@ const addMacro = async (userId, macros) => {
       throw new Error(`User with ID ${userId} does not exist`);
   }
 
-  // IMPORTANT: Adjust the column order to match your table schema.
-  // For a table defined as (macro_id, user_id, food_name, weight, protein, carbs, fats, calories, date),
+  // IMPORTANT: Adjust the column order to match your table's schema.
+  // For a table defined as (macro_id, user_id, food_name, calories, protein, carbs, fats, weight, date),
   // the INSERT should be:
   const [insertResult] = await connection.execute(
-      'INSERT INTO macros (user_id, food_name, weight, protein, carbs, fats, calories) VALUES (?, ?, ?, ?, ?, ?, ?)',
-      [userId, macros.food_name, macros.weight || null, macros.protein, macros.carbs, macros.fats, macros.calories]
+      'INSERT INTO macros (user_id, food_name, calories, protein, carbs, fats, weight) VALUES (?, ?, ?, ?, ?, ?, ?)',
+      [
+        userId,
+        macros.food_name,
+        macros.calories, // calculated calories
+        macros.protein,
+        macros.carbs,
+        macros.fats,
+        macros.weight || null
+      ]
   );
 
   connection.release();
