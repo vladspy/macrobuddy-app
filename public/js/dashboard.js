@@ -30,14 +30,13 @@ function computeTargetsFromPersonalInfo(piData) {
   let activityFactor = 1.3;
   let tdee = bmr * activityFactor;
 
-  // NEW: Apply the user's goal from the DB
-  // E.g. "gain" => +500, "lose" => -500, "maintaining" => do nothing
+  // Apply the user's goal from the DB
+  // E.g. "gain" => +500, "lose" => -500, "maintaining" (or undefined) => do nothing
   if (goal === "gain") {
     tdee += 500;
   } else if (goal === "lose") {
     tdee -= 500;
   }
-  // else if (goal === "maintaining" or undefined), do nothing
 
   // Convert TDEE to daily macros in a ratio (30% protein, 40% carbs, 30% fat)
   let calFromProtein = 0.3 * tdee;
@@ -82,6 +81,9 @@ async function loadDashboardMacros() {
   try {
     const response = await fetch(`${SERVER_IP}/api/macros/getMacros?userId=${userId}`);
     const data = await response.json();
+
+    // Debug: Log the data returned by the API
+    console.log("Macros data received:", data);
 
     // If no data is found, initialize totals to zero
     if (!response.ok) {
