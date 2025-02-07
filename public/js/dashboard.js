@@ -31,7 +31,7 @@ function computeTargetsFromPersonalInfo(piData) {
   let tdee = bmr * activityFactor;
 
   // NEW: Apply the user's goal from the DB
-  // E.g. "gaining" => +500, "losing" => -500, "maintaining" => do nothing
+  // E.g. "gain" => +500, "lose" => -500, "maintaining" => do nothing
   if (goal === "gain") {
     tdee += 500;
   } else if (goal === "lose") {
@@ -159,23 +159,6 @@ async function loadDashboardMacros() {
   }
 }
 
-// New function to load server time
-async function loadServerTime() {
-  try {
-    const timeResponse = await fetch(`${SERVER_IP}/api/time`);
-    if (timeResponse.ok) {
-      const timeData = await timeResponse.json();
-      // Assuming timeData has a property 'time' that contains the current time as a string
-      document.getElementById("serverTime").textContent = "Current Server Time: " + timeData.time;
-    } else {
-      document.getElementById("serverTime").textContent = "Current Server Time: Unavailable";
-    }
-  } catch (error) {
-    console.error("❌ Error fetching server time:", error);
-    document.getElementById("serverTime").textContent = "Current Server Time: Error";
-  }
-}
-
 document.addEventListener("DOMContentLoaded", async () => {
   // Check if the user is logged in via your server endpoint
   try {
@@ -192,6 +175,4 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
   // Load macros and update dashboard
   loadDashboardMacros();
-  // Load server time
-  loadServerTime();
 });

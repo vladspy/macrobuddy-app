@@ -9,6 +9,7 @@ const userRoutes = require('./routes/userRoutes');
 const macrosRoutes = require('./routes/macrosRoutes');
 const PIRoutes = require('./routes/PIRoutes');
 const foodRoutes = require('./routes/foodRoutes');
+const timeRoutes = require('./routes/timeRoutes');
 
 const app = express();
 
@@ -45,6 +46,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/macros', macrosRoutes);
 app.use('/api/personal-info', PIRoutes);
 app.use('/api/food', foodRoutes);
+app.use('/api/time', timeRoutes);
 
 // Start server
 app.listen(PORT, '0.0.0.0', () => {
