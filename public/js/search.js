@@ -89,13 +89,19 @@ async function addFoodToList(food) {
 
     userId = parseInt(userId, 10); // ✅ Ensure userId is a number
 
+    // Append the food to the UI list
     let foodList = document.getElementById("foodEntries");
-
     let foodItem = document.createElement("li");
     foodItem.textContent = `${food.product_name} - ${food.calories} kcal`;
     foodList.appendChild(foodItem);
 
     updateMacroTotals(food);
+
+    // Read weight from the weight input field. Use default value if not provided.
+    const weightInputValue = document.getElementById("foodWeight").value;
+    const weight = weightInputValue && parseFloat(weightInputValue) > 0
+                    ? parseFloat(weightInputValue)
+                    : 100; // Default weight: 100 grams
 
     try {
         let response = await fetch(`${SERVER_IP}/api/macros/addMacros`, {
@@ -107,7 +113,8 @@ async function addFoodToList(food) {
                 protein: food.protein,
                 carbs: food.carbs,
                 fats: food.fats,
-                calories: food.calories
+                calories: food.calories,
+                weight: weight
             })
         });
 
