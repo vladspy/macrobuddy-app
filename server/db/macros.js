@@ -39,9 +39,8 @@ const addMacro = async (userId, macros) => {
   }
 
   // IMPORTANT: Adjust the column order to match your table's schema.
-  // For example, if your table is defined as:
-  // (macro_id, user_id, food_name, calories, protein, carbs, fats, weight, date)
-  // then the INSERT should be:
+  // For a table defined as (macro_id, user_id, food_name, calories, protein, carbs, fats, weight, date),
+  // the INSERT should be:
   const [insertResult] = await connection.execute(
       'INSERT INTO macros (user_id, food_name, calories, protein, carbs, fats, weight) VALUES (?, ?, ?, ?, ?, ?, ?)',
       [

@@ -15,7 +15,6 @@ function computeTargetsFromPersonalInfo(piData) {
   // piData object from DB: { user_id, sex, height, age, weight, goal, ... }
   // sex => 0 (female), 1 (male)
   const { sex, height, age, weight, goal } = piData;
-
   let gender = (sex === 1) ? "male" : "female";
 
   // BMR (Mifflin-St Jeor)
@@ -42,7 +41,6 @@ function computeTargetsFromPersonalInfo(piData) {
   let calFromProtein = 0.3 * tdee;
   let calFromCarbs   = 0.4 * tdee;
   let calFromFats    = 0.3 * tdee;
-
   let protein = calFromProtein / 4;
   let carbs   = calFromCarbs / 4;
   let fats    = calFromFats / 9;
@@ -92,7 +90,6 @@ async function loadDashboardMacros() {
 
     // Calculate totals
     const totals = { calories: 0, protein: 0, carbs: 0, fats: 0 };
-
     if (Array.isArray(data) && data.length > 0) {
       data.forEach((food) => {
         totals.calories += parseFloat(food.calories);
@@ -138,7 +135,6 @@ async function loadDashboardMacros() {
         const dateAdded = food.date ? new Date(food.date).toLocaleString() : "-";
         // Weight may be null; show as "-" if not provided.
         const weightDisplay = food.weight !== null && food.weight !== undefined ? food.weight : "-";
-
         const row = document.createElement("tr");
         row.innerHTML = `
           <td>${dateAdded}</td>

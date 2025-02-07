@@ -8,22 +8,19 @@ const { addMacro, getMacros, deleteLastMacro } = require('../db/macros');
 // --- Stub function to simulate USDA nutritional data lookup ---
 // In a real implementation, you would query the USDA API here.
 const getUSDAData = async (food_name) => {
-  // Sanitize input: lowercase and trim
+  // Sanitize input: lowercase and trim whitespace
   const key = food_name.toLowerCase().trim();
+  console.log("Looking up USDA data for key:", key);
   // Example static data for demonstration:
   const foods = {
     "apple": { caloriesPer100g: 52, proteinPer100g: 0.3, carbsPer100g: 14, fatsPer100g: 0.2 },
     "banana": { caloriesPer100g: 89, proteinPer100g: 1.1, carbsPer100g: 23, fatsPer100g: 0.3 },
     "chicken breast": { caloriesPer100g: 165, proteinPer100g: 31, carbsPer100g: 0, fatsPer100g: 3.6 }
   };
-  console.log("Looking up USDA data for key:", key);
-  // Fallback values: note that fallback caloriesPer100g is 100, so if fallback is used,
-  // calories = 100 * (weight/100) = weight.
   return foods[key] || { caloriesPer100g: 100, proteinPer100g: 2, carbsPer100g: 20, fatsPer100g: 1 };
 };
 
 // Validation schema for adding macros
-// Now we require food_name and weight; the nutritional values will be calculated.
 const addMacrosSchema = Joi.object({
   userId: Joi.number().integer().required(),
   food_name: Joi.string().required(),
@@ -72,7 +69,6 @@ router.get('/getMacros', async (req, res) => {
   if (error) {
     return res.status(400).json({ error: error.details[0].message });
   }
-
   const { userId } = value;
 
   try {
@@ -83,7 +79,7 @@ router.get('/getMacros', async (req, res) => {
     // Map the result to include a "time" property aliasing the "date" column.
     const result = macroData.map(item => ({
       ...item,
-      time: item.date, // Alias 'date' as 'time'
+      time: item.date,
     }));
     res.status(200).json(result);
   } catch (err) {
