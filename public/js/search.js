@@ -110,10 +110,6 @@ async function addFoodToList(food) {
             body: JSON.stringify({
                 userId,
                 food_name: food.product_name,
-                protein: food.protein,
-                carbs: food.carbs,
-                fats: food.fats,
-                calories: food.calories,
                 weight: weight
             })
         });
@@ -124,6 +120,7 @@ async function addFoodToList(food) {
         console.log("✅ Food added successfully:", food.product_name);
     } catch (error) {
         console.error("❌ Error adding food:", error);
+        alert("Error adding food: " + error.message);
     }
 }
 
