@@ -16,6 +16,7 @@ h2, h3 {
     background-color: #1e1e1e;
     border: 1px solid #333;
     border-radius: 5px;
+    width: calc(100% - 20px); /* Ensure alignment with other elements */
 }
 
 #weightInputContainer label {
@@ -36,8 +37,9 @@ h2, h3 {
     color: #ffffff;
 }
 
+/* Search bar styling */
 #foodSearch {
-    width: 100%;
+    width: calc(100% - 20px); /* Ensures it aligns with weight input */
     padding: 10px;
     font-size: 16px;
     border: 1px solid #333;
@@ -45,6 +47,8 @@ h2, h3 {
     outline: none;
     background-color: #1e1e1e;
     color: #ffffff;
+    display: block;
+    margin-top: 10px;
 }
 
 #searchResults {
@@ -90,13 +94,16 @@ button:hover {
     background-color: #b71c1c;
 }
 
+/* Selected food list and total macros styling */
 #foodList, #totalMacros {
     background: #1e1e1e;
     padding: 15px;
     border-radius: 8px;
     margin-top: 15px;
+    width: calc(100% - 20px); /* Aligns with input fields */
 }
 
+/* Back to Home button */
 #backToIndex {
     display: block;
     width: 100%;
